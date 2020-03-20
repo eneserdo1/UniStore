@@ -8,11 +8,11 @@
 
     <EditText
         android:id="@+id/etEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="248dp"
-        android:layout_marginEnd="102dp"
+        android:layout_width="240dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="174dp"
+        android:layout_marginEnd="86dp"
         android:ems="10"
         android:hint="E-mail"
         android:inputType="textPersonName"
@@ -22,11 +22,11 @@
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="28dp"
-        android:layout_marginEnd="102dp"
+        android:layout_width="240dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="85dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="86dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -38,26 +38,24 @@
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="163dp"
-        android:text="giriş yap"
+        android:layout_marginStart="161dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="162dp"
         android:onClick="login"
+        android:text="giriş yap"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/txtAddUser" />
 
     <TextView
         android:id="@+id/txtAddUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="105dp"
-        android:text="Hesabınız yok mu?Hesap oluştur."
+        android:layout_marginTop="24dp"
         android:onClick="addUser"
+        android:text="Hesabınız yok mu?Hesap oluştur."
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
