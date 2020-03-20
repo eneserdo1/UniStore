@@ -1,17 +1,37 @@
 package com.eneserdogan.unistore;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+    String emailPattern = "[A-Za-z0-9+_.-]+@[a-zA-Z0-9.-]+\\.+edu+\\.+tr+";
+    EditText Email;
+    EditText Password;
+    private FirebaseAuth firebaseAuth;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Email=findViewById(R.id.etEmail);
+        Password=findViewById(R.id.etPassword);
+
+        firebaseAuth=FirebaseAuth.getInstance();
+
     }
     public void addUser(View view){
         Intent ıntent=new Intent(MainActivity.this,NewUser.class);
@@ -19,6 +39,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view){
+        firebaseAuth.signInWithEmailAndPassword(Email.getText().toString(),
+                Password.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                                if (Email.getText().toString().trim().matches(emailPattern)){
+                                    startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                                }
+                            }else{
+                                Toast.makeText(MainActivity.this, "Please verify your email address"
+                                        , Toast.LENGTH_LONG).show();
+                            }
+                        }else{
+                            Toast.makeText(MainActivity.this, task.getException().getMessage()
+                                    , Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
 
     }
 }
