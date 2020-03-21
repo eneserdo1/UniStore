@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "694474103342",
+    "firebase_url": "https://unistore-49f06.firebaseio.com",
+    "project_id": "unistore-49f06",
+    "storage_bucket": "unistore-49f06.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:694474103342:android:f0c3bbfdbcec8f96d15dbf",
+        "android_client_info": {
+          "package_name": "com.eneserdogan.unistore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "694474103342-lo9p32j6qd5eue01teq7899lpkrvgav9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eneserdogan.unistore",
+            "certificate_hash": "dc78bb5b989096bae1b66dcb6aa3d26af85b75af"
+          }
+        },
+        {
+          "client_id": "694474103342-di5rocjc48prosa3l6h5crr8uj1o5e4u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAarWUImWisFh-y2uQK6BmX03BC-hHr9Ro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "694474103342-di5rocjc48prosa3l6h5crr8uj1o5e4u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
