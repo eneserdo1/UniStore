@@ -4,66 +4,102 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewUser">
+    tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/etUserEmail"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginEnd="76dp"
-        android:ems="10"
-        android:hint="E-posta"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="56dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:background="@color/colorAccent">
 
-    <EditText
-        android:id="@+id/etAdSoyad"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="54dp"
-        android:layout_marginEnd="76dp"
-        android:ems="10"
-        android:hint="Ad ve Soyad"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etUserEmail" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="58dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginEnd="29dp"
-        app:layout_constraintEnd_toStartOf="@+id/etUserEmail"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/mail" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@drawable/logo"
+            android:layout_marginBottom="30dp"/>
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="58dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginEnd="29dp"
-        app:layout_constraintEnd_toStartOf="@+id/etAdSoyad"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/person"
-        tools:layout_editor_absoluteY="264dp" />
+        <!-- İsim input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:hintTextAppearance="@color/colorText"
+            android:layout_marginBottom="8dp">
 
-    <Button
-        android:id="@+id/btnKayıt"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="144dp"
-        android:onClick="kayıtOl"
-        android:text="Kayıt ol"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etAdSoyad" />
+            <EditText android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColorHint="@color/colorText"
+                android:textColor="@color/colorText"
+                android:hint="İsim"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- email input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:textColorHint="@color/colorText"
+                android:textColor="@color/colorText"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- password input -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:hintTextAppearance="@color/colorText"
+            android:layout_marginBottom="8dp">
+
+            <EditText android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:textColorHint="@color/colorText"
+                android:textColor="@color/colorText"
+                android:hint="Şifre"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnKayit"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:onClick="login"
+            android:padding="12dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorText"
+            android:background="@color/colorPrimaryDark"
+            android:text="Kayıt Ol" />
+
+        <TextView android:id="@+id/link_signup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Kaydın var mı? Giriş yap."
+            android:gravity="center"
+            android:textColor="@color/colorText"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
