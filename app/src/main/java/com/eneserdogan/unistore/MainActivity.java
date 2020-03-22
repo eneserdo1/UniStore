@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void addUser(View view){
-        Intent ıntent=new Intent(MainActivity.this,NewUser.class);
+        Intent ıntent=new Intent(MainActivity.this,verifyMailActivity.class);
         startActivity(ıntent);
     }
 

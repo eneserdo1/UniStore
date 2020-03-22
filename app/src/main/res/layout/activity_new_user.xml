@@ -6,4 +6,64 @@
     android:layout_height="match_parent"
     tools:context=".NewUser">
 
+    <EditText
+        android:id="@+id/etUserEmail"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginEnd="76dp"
+        android:ems="10"
+        android:hint="E-posta"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etAdSoyad"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="54dp"
+        android:layout_marginEnd="76dp"
+        android:ems="10"
+        android:hint="Ad ve Soyad"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etUserEmail" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="58dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginEnd="29dp"
+        app:layout_constraintEnd_toStartOf="@+id/etUserEmail"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/mail" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="58dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginEnd="29dp"
+        app:layout_constraintEnd_toStartOf="@+id/etAdSoyad"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/person"
+        tools:layout_editor_absoluteY="264dp" />
+
+    <Button
+        android:id="@+id/btnKayıt"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="92dp"
+        android:layout_marginEnd="144dp"
+        android:onClick="kayıtOl"
+        android:text="Kayıt ol"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etAdSoyad" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
