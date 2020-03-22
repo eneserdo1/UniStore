@@ -19,6 +19,7 @@ import java.util.UUID;
 public class NewUser extends AppCompatActivity {
     EditText etMail;
     EditText etAdSoyad;
+    EditText etPassword;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -26,8 +27,9 @@ public class NewUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user);
 
-        etMail=findViewById(R.id.etUserEmail);
-        etAdSoyad=findViewById(R.id.etAdSoyad);
+        etMail=findViewById(R.id.etEmail);
+        etAdSoyad=findViewById(R.id.etName);
+        etPassword=findViewById(R.id.etPassword);
 
         firebaseAuth=FirebaseAuth.getInstance();
     }
@@ -36,16 +38,13 @@ public class NewUser extends AppCompatActivity {
 
         String email=etMail.getText().toString().trim();
         String adSoyad=etAdSoyad.getText().toString().trim();
+        String password=etPassword.getText().toString().trim();
+        uploadData(email,adSoyad,password);
 
-        if (firebaseAuth.getCurrentUser().isEmailVerified()){
-            uploadData(email,adSoyad);
-        }else {
-            Toast.makeText(getApplicationContext(),"Lütfen mail adresini doğrulayın",Toast.LENGTH_LONG).show();
-        }
 
 
     }
-    public void uploadData(String email,String adSoyad){
+    public void uploadData(String email,String adSoyad,String password){
         String id= UUID.randomUUID().toString();//random ıd
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -54,6 +53,7 @@ public class NewUser extends AppCompatActivity {
         user.put("id",id);
         user.put("adSoyad",adSoyad);
         user.put("email",email);
+        user.put("şifre",password);
 
 
         // Yeni belge ekleniyor
@@ -62,8 +62,9 @@ public class NewUser extends AppCompatActivity {
 
         Toast.makeText(NewUser.this, "Kayıt Başarılı",
                 Toast.LENGTH_LONG).show();
-        Intent intent2=new Intent(NewUser.this,MainActivity.class);
+        Intent intent2=new Intent(NewUser.this,HomeActivity.class);
         startActivity(intent2);
+        finish();
 
     }
 }

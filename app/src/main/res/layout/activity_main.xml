@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:text="Henüz kayıtlı değil misin? Kayıt ol."
+            android:onClick="addUser"
             android:gravity="center"
             android:textColor="@color/colorText"
             android:textSize="16dp"/>

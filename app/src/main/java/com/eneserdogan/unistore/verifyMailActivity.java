@@ -51,7 +51,7 @@ public class verifyMailActivity extends AppCompatActivity {
                                                     if(task.isSuccessful()){
                                                         Toast.makeText(getApplicationContext(), "\n" + "Lütfen doğrulama için e-postanızı kontrol edin ",
                                                                 Toast.LENGTH_LONG).show();
-                                                        //email.setText("");
+                                                       // email.setText("");
                                                         //password.setText("");
                                                         Intent ıntent=new Intent(verifyMailActivity.this,NewUser.class);
                                                         startActivity(ıntent);
