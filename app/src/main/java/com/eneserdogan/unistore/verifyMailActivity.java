@@ -53,8 +53,8 @@ public class verifyMailActivity extends AppCompatActivity {
                                                                 Toast.LENGTH_LONG).show();
                                                        // email.setText("");
                                                         //password.setText("");
-                                                        Intent ıntent=new Intent(verifyMailActivity.this,NewUser.class);
-                                                        startActivity(ıntent);
+                                                        //Intent ıntent=new Intent(verifyMailActivity.this,NewUser.class);
+                                                      //  startActivity(ıntent);
 
                                                     }else{
                                                         Toast.makeText(verifyMailActivity.this,  task.getException().getMessage(),

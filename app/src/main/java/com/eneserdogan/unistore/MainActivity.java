@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,9 +37,11 @@ public class MainActivity extends AppCompatActivity {
     EditText Password;
     private FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
-    String mailKontrol;
-    ArrayList<String> kontrol;
-    String sayac="0";
+    FirebaseUser firebaseUser;
+    String mailKontrol="";
+    Boolean torf=false;
+
+
 
 
     @Override
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         Password=findViewById(R.id.etPassword);
 
         firebaseAuth=FirebaseAuth.getInstance();
-        kontrol=new ArrayList<>();
+        firebaseFirestore=FirebaseFirestore.getInstance();
 
     }
     public void addUser(View view){
@@ -57,6 +62,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view){
+        mailKontrol=Email.getText().toString();
+        CollectionReference collectionReference=firebaseFirestore.collection("users");
+        collectionReference.whereEqualTo("email",mailKontrol).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    QuerySnapshot document = task.getResult();
+                    if(document != null){
+                        List custom = document.getDocuments();
+                        if (custom.size() == 0){
+                            torf = true;
+                            System.out.println("getdata girdi");
+                        }
+                    }
+                }
+            }
+        });
+
         firebaseAuth.signInWithEmailAndPassword(Email.getText().toString(),
                 Password.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -65,9 +88,16 @@ public class MainActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             if(firebaseAuth.getCurrentUser().isEmailVerified()){
                                 if (Email.getText().toString().trim().matches(emailPattern)) {
-                                    startActivity(new Intent(MainActivity.this, NewUser.class));
-                                }
+                                    if (torf == false){
+                                        startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                                        System.out.println("false girdi");
 
+                                    }else {
+                                        startActivity(new Intent(MainActivity.this, NewUser.class));
+                                        System.out.println("else girdi");
+
+                                    }
+                                }
                             }else{
                                 Toast.makeText(MainActivity.this, "Please verify your email address"
                                         , Toast.LENGTH_LONG).show();
@@ -81,30 +111,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    /*public void getdata(){
-        firebaseFirestore.collection("users")
-                .whereEqualTo("email",Email.getText().toString())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                if (document != null) {
-                                    mailKontrol=document.getString("email");
-                                    kontrol.add(mailKontrol);
-                                }else {
-                                    System.out.println("Gelen veri yok");
-                                }
 
-
-                            }
-                        } else {
-                            Log.w("Error getting documents.", task.getException());
-                        }
-                    }
-                });
-
-    }*/
 }

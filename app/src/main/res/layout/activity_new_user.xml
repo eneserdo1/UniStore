@@ -34,13 +34,14 @@
             app:hintTextAppearance="@color/colorText"
             android:layout_marginBottom="8dp">
 
-            <EditText android:id="@+id/etName"
+            <EditText
+                android:id="@+id/etName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColorHint="@color/colorText"
+                android:hint="Ad Soyad"
+                android:inputType="text"
                 android:textColor="@color/colorText"
-                android:hint="İsim"/>
+                android:textColorHint="@color/colorText" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- email input -->

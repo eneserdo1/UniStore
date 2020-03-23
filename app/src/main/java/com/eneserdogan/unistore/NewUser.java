@@ -35,13 +35,15 @@ public class NewUser extends AppCompatActivity {
     }
 
     public void kayıtOl(View view){
+        if(etMail.getText().toString().trim().length() == 0 || etAdSoyad.getText().toString().trim().length() ==0){
+            Toast.makeText(getApplicationContext(),"LÜtfen Gerekli Alanları Doldurunuz",Toast.LENGTH_LONG).show();
+        }else {
+            String email=etMail.getText().toString().trim();
+            String adSoyad=etAdSoyad.getText().toString().trim();
+            String password=etPassword.getText().toString().trim();
+            uploadData(email,adSoyad,password);
 
-        String email=etMail.getText().toString().trim();
-        String adSoyad=etAdSoyad.getText().toString().trim();
-        String password=etPassword.getText().toString().trim();
-        uploadData(email,adSoyad,password);
-
-
+        }
 
     }
     public void uploadData(String email,String adSoyad,String password){
