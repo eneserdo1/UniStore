@@ -6,39 +6,88 @@
     android:layout_height="match_parent"
     tools:context=".verifyMailActivity">
 
-    <EditText
-        android:id="@+id/etVerifyMail"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="200dp"
-        android:layout_marginEnd="104dp"
-        android:ems="10"
-        android:hint="E-posta"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center_vertical"
+    android:paddingTop="56dp"
+    android:paddingLeft="24dp"
+    android:paddingRight="24dp"
+    android:background="@color/colorAccent">
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginBottom="50dp"
+        android:layout_gravity="center_horizontal"
+        app:srcCompat="@drawable/logo"/>
+
+
+
+    <!-- email input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:hintTextColor="@color/colorText"
+        android:textColorHint="@color/colorText">
+
+        <EditText
+            android:id="@+id/etVerifyMail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:textColorHint="@color/colorText"
+            android:textColor="@color/colorText"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- password input -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:hintTextColor="@color/colorText"
+        android:textColorHint="@color/colorText">
+
+        <EditText android:id="@+id/etVerifyPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:textColorHint="@color/colorText"
+            android:textColor="@color/colorText"
+            android:hint="Şifre"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/btnSendVerify"
-        android:layout_width="120dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="156dp"
+        android:id="@+id/btnVerify"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:padding="12dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorText"
+        android:background="@color/colorPrimaryDark"
         android:onClick="sendMail"
-        android:text="gönder"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etVerifyPassword" />
+        android:text="Kayıt Ol" />
 
-    <EditText
-        android:id="@+id/etVerifyPassword"
-        android:layout_width="220dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="104dp"
-        android:ems="10"
-        android:hint="Şifre"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etVerifyMail" />
+        <TextView android:id="@+id/link_forgotPassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Yeni kayıt için öğrenci mail bilgilerinizi girip mailinizi doğrulamanız gerekmektedir."
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/colorText"
+            android:textSize="14dp"/>
+
+</LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
