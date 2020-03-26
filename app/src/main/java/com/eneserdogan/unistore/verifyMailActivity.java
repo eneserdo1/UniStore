@@ -3,6 +3,8 @@ package com.eneserdogan.unistore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +23,8 @@ public class verifyMailActivity extends AppCompatActivity {
     String emailPattern = "[A-Za-z0-9+_.-]+@[a-zA-Z0-9.-]+\\.+edu+\\.+tr+";
     FirebaseAuth firebaseAuth;
 
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,14 +34,25 @@ public class verifyMailActivity extends AppCompatActivity {
         password=findViewById(R.id.etVerifyPassword);
         firebaseAuth=FirebaseAuth.getInstance();
 
-
+        loadProgressDialog();
     }
 
     public void sendMail(View view){
         if(email.getText().toString().isEmpty()) {
             Toast.makeText(getApplicationContext(),"Üniversite Mail Adresi Girin",Toast.LENGTH_SHORT).show();
-        }else {
-            if (email.getText().toString().trim().matches(emailPattern)) {
+            return;
+        }
+
+        if (!(email.getText().toString().trim().matches(emailPattern))) {
+            Toast.makeText(getApplicationContext()," Lütfen @[Üniversite Adı].edu.tr Uzantılı Email Girin ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        showProgressDialog();
+
+        Thread mThread = new Thread(){
+            @Override
+            public void run() {
                 firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),
                         password.getText().toString())
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -51,10 +66,10 @@ public class verifyMailActivity extends AppCompatActivity {
                                                     if(task.isSuccessful()){
                                                         Toast.makeText(getApplicationContext(), "\n" + "Lütfen doğrulama için e-postanızı kontrol edin ",
                                                                 Toast.LENGTH_LONG).show();
-                                                       // email.setText("");
+                                                        // email.setText("");
                                                         //password.setText("");
                                                         //Intent ıntent=new Intent(verifyMailActivity.this,NewUser.class);
-                                                      //  startActivity(ıntent);
+                                                        //  startActivity(ıntent);
 
                                                     }else{
                                                         Toast.makeText(verifyMailActivity.this,  task.getException().getMessage(),
@@ -68,11 +83,27 @@ public class verifyMailActivity extends AppCompatActivity {
                                 }
                             }
                         });
-
-            } else {
-                Toast.makeText(getApplicationContext()," Lütfen @[Üniversite Adı].edu.tr Uzantılı Email Girin ", Toast.LENGTH_SHORT).show();
+                dismissProgressDialog();
             }
-        }
+        };
 
+        mThread.start();
+
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void loadProgressDialog(){
+        progressDialog = new ProgressDialog(this, R.style.CustomProgressDialogStyle);
+        progressDialog.setMessage("Kayıt ediliyor...");
+    }
+
+    private void showProgressDialog(){
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog(){
+        progressDialog.dismiss();
     }
 }
