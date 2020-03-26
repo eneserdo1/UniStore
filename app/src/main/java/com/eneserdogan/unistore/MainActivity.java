@@ -2,12 +2,9 @@ package com.eneserdogan.unistore;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -31,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     Boolean torf=false;
 
-
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -45,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseFirestore=FirebaseFirestore.getInstance();
 
+        loadProgressDialog();
     }
     public void addUser(View view){
         Intent ıntent=new Intent(MainActivity.this,verifyMailActivity.class);
@@ -64,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        final ProgressDialog progressDialog = new ProgressDialog(this, R.style.CustomProgressDialogStyle);
-        progressDialog.setMessage("Giriş yapılıyor...");
-        progressDialog.show();
+        showProgressDialog();
 
         Thread mThread = new Thread() {
             @Override
@@ -98,10 +94,12 @@ public class MainActivity extends AppCompatActivity {
                                             if (torf == false){
                                                 startActivity(new Intent(MainActivity.this,HomeActivity.class));
                                                 System.out.println("false girdi");
+                                                finish();
 
                                             }else {
                                                 startActivity(new Intent(MainActivity.this, NewUser.class));
                                                 System.out.println("else girdi");
+                                                finish();
 
                                             }
                                         }
@@ -116,15 +114,27 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-                progressDialog.dismiss();
+                dismissProgressDialog();
             }
         };
         mThread.start();
-
     }
 
     public void resetPassword(View view) {
         Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
         startActivity(intent);
+    }
+
+    private void loadProgressDialog(){
+        progressDialog = new ProgressDialog(this, R.style.CustomProgressDialogStyle);
+        progressDialog.setMessage("Giriş yapılıyor...");
+    }
+
+    private void showProgressDialog(){
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog(){
+        progressDialog.dismiss();
     }
 }
