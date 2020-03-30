@@ -7,16 +7,29 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link dashboardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class dashboardFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    String[] kategori={"Elektronik","Beyaz Eşya","Mobilya"};
+
+
+    String kategoriSecim;
+    ListView LvKategori;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFirestore;
+
+    View view;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -25,18 +38,9 @@ public class dashboardFragment extends Fragment {
     private String mParam2;
 
     public dashboardFragment() {
-        // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment dashboardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static dashboardFragment newInstance(String param1, String param2) {
         dashboardFragment fragment = new dashboardFragment();
         Bundle args = new Bundle();
@@ -58,8 +62,25 @@ public class dashboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+
+        view= inflater.inflate(R.layout.fragment_dashboard, container, false);
+
+        firebaseFirestore=FirebaseFirestore.getInstance();
+        firebaseAuth=FirebaseAuth.getInstance();
+        LvKategori=view.findViewById(R.id.LvİlanKategori);
+
+        final ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1,kategori);
+        LvKategori.setAdapter(adapter);
+
+        LvKategori.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                kategoriSecim=(String) kategori[position];
+                System.out.println("Sonuc ="+kategoriSecim);
+            }
+        });
+        return view;
     }
 }

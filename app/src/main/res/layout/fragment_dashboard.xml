@@ -4,4 +4,105 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.dashboard.DashboardFragment"/>
+    tools:context=".ui.dashboard.DashboardFragment">
+
+    <LinearLayout
+        android:layout_width="409dp"
+        android:layout_height="657dp"
+        android:background="@drawable/arkaplan"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:background="?android:attr/statusBarColor">
+
+            <ImageView
+                android:id="@+id/imageİlan4"
+                android:layout_width="67dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="37dp"
+                android:src="@drawable/kmra"
+                app:layout_constraintEnd_toStartOf="@+id/imageİlan5"
+                app:layout_constraintTop_toBottomOf="@+id/imageİlan2" />
+
+            <ImageView
+                android:id="@+id/imageİlan5"
+                android:layout_width="67dp"
+                android:layout_height="72dp"
+                android:layout_marginEnd="50dp"
+                android:src="@drawable/kmra"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageİlan3" />
+
+            <ImageView
+                android:id="@+id/imageİlan3"
+                android:layout_width="67dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="50dp"
+                android:src="@drawable/kmra"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageİlan1"
+                android:layout_width="135dp"
+                android:layout_height="144dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/kmra"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageİlan2"
+                android:layout_width="67dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="37dp"
+                android:src="@drawable/kmra"
+                app:layout_constraintEnd_toStartOf="@+id/imageİlan3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txtİlan"
+                android:layout_width="135dp"
+                android:layout_height="23dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Fotoğraf Seçiniz"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageİlan1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <EditText
+            android:id="@+id/etİlanBaşlık"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:ems="10"
+            android:hint="Ürün Başlığı"
+            android:inputType="textPersonName" />
+
+        <ListView
+            android:id="@+id/LvİlanKategori"
+            android:layout_width="match_parent"
+            android:layout_height="145dp" />
+
+        <EditText
+            android:id="@+id/etİlanAcıklama"
+            android:layout_width="match_parent"
+            android:layout_height="122dp"
+            android:ems="10"
+            android:hint="Açıklama"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/btnİlanYükle"
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:text="ilanı yükle" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
