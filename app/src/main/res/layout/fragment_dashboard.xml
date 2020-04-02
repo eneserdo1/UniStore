@@ -9,15 +9,14 @@
     <LinearLayout
         android:layout_width="409dp"
         android:layout_height="657dp"
-        android:background="@drawable/arkaplan"
+        android:background="@drawable/background_2"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:background="?android:attr/statusBarColor">
+            android:layout_height="195dp">
 
             <ImageView
                 android:id="@+id/imageİlan4"
@@ -86,23 +85,31 @@
             android:hint="Ürün Başlığı"
             android:inputType="textPersonName" />
 
-        <ListView
-            android:id="@+id/LvİlanKategori"
+        <Spinner
+            android:id="@+id/SpİlanKategori"
             android:layout_width="match_parent"
-            android:layout_height="145dp" />
+            android:layout_height="75dp" />
 
         <EditText
             android:id="@+id/etİlanAcıklama"
             android:layout_width="match_parent"
-            android:layout_height="122dp"
+            android:layout_height="95dp"
             android:ems="10"
             android:hint="Açıklama"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/etİlanFiyat"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:ems="10"
+            android:hint="Fiyat"
             android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/btnİlanYükle"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
+            android:layout_height="72dp"
             android:text="ilanı yükle" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
