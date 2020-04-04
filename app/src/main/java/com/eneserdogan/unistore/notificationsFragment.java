@@ -1,21 +1,29 @@
 package com.eneserdogan.unistore;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eneserdogan.unistore.Utils.RandomName;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,9 +34,16 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+
 
 
 public class notificationsFragment extends Fragment {
@@ -38,21 +53,22 @@ public class notificationsFragment extends Fragment {
     private String mParam2;
 
     View view;
+    EditText UserName;
+    EditText UserMail;
+    AutoCompleteTextView UserUniversite;
+    Button btnDüzenle;
+    Button btnKaydet;
+    CircleImageView imgProfilePicture;
+
     FirebaseUser firebaseUser;
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
+    StorageReference storageReference;
 
-    String kullanıcıMail;
-    EditText UserName;
-    EditText UserMail;
-    EditText UserÜniversite;
-    Button btnDüzenle;
-    Button btnKaydet;
-    String ıd;
+    ProgressDialog progressDialog;
 
-    String gelenAd;
-    String gelenUniversite;
-
+    String userID;
+    String urlProfilePicture = null;
 
     public notificationsFragment() {
     }
@@ -86,24 +102,31 @@ public class notificationsFragment extends Fragment {
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser=firebaseAuth.getCurrentUser();
 
-        kullanıcıMail=firebaseUser.getEmail();
+        loadWidgets();
 
-        UserName=view.findViewById(R.id.etProfilAdsoyad);
-        UserMail=view.findViewById(R.id.etProfilMail);
-        UserÜniversite=view.findViewById(R.id.etProfilÜniversite);
-        btnDüzenle=view.findViewById(R.id.btnProfilDüzenle);
-        btnKaydet=view.findViewById(R.id.btnProfilKaydet);
-
-        btnKaydet.setVisibility(View.INVISIBLE);
         getData();
+
+        loadProgressDialog();
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.select_dialog_item, getResources().getStringArray(R.array.universite));
+        UserUniversite.setThreshold(1);
+        UserUniversite.setAdapter(arrayAdapter);
+
+        imgProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
 
         btnDüzenle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btnKaydet.setVisibility(View.VISIBLE);
-
+                duzenlemeyiAc();
             }
         });
+
 
         btnKaydet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,22 +138,112 @@ public class notificationsFragment extends Fragment {
         return view;
     }
 
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, 5);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 5 && resultCode == Activity.RESULT_OK) {
+            final Uri filePath = data.getData();
+            Log.i("TAG", "resim: " + filePath);
+            final String randName = RandomName.randImageName();
+            Log.i("TAG", "random: " + randName);
+
+            showProgressDialog();
+
+            Thread mThread = new Thread(){
+                @Override
+                public void run() {
+                    final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
+                    UploadTask uploadTask = refStorage.putFile(filePath);
+                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()){
+                                throw task.getException();
+                            }
+
+                            return refStorage.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()){
+                                Uri downloadUri = task.getResult();
+                                urlProfilePicture = downloadUri.toString();
+                                Log.i("TAG", "url: " + urlProfilePicture);
+                                Toast.makeText(getContext(), "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
+                                Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
+                                uploadData();
+                            }
+
+                            else {
+                                Toast.makeText(getContext(), "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
+                                imgProfilePicture.setImageResource(R.drawable.profile);
+                            }
+                        }
+                    });
+                    dismissProgressDialog();
+                }
+            };
+            mThread.start();
+        }
+    }
+
+    void loadWidgets(){
+        UserName=view.findViewById(R.id.etProfilAdsoyad);
+        UserMail=view.findViewById(R.id.etProfilMail);
+        UserUniversite=view.findViewById(R.id.autoUniversity);
+        btnDüzenle=view.findViewById(R.id.btnProfilDüzenle);
+        btnKaydet=view.findViewById(R.id.btnProfilKaydet);
+        imgProfilePicture = view.findViewById(R.id.imgPP);
+
+        UserMail.setEnabled(false);
+
+        btnKaydet.setVisibility(View.GONE);
+        UserName.setEnabled(false);
+        UserUniversite.setEnabled(false);
+    }
+
+    private void duzenlemeyiAc() {
+        UserName.setEnabled(true);
+        UserUniversite.setEnabled(true);
+
+        btnKaydet.setVisibility(View.VISIBLE);
+        btnDüzenle.setVisibility(View.GONE);
+    }
+
     public void getData(){
+        final String userMail = firebaseUser.getEmail();
+        final String[] userName = new String[1];
+        final String[] userUni = new String[1];
+
         firebaseFirestore.collection("users")
-                .whereEqualTo("email",kullanıcıMail)
+                .whereEqualTo("email", userMail)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                gelenAd = document.getString("adSoyad");
-                                gelenUniversite = document.getString("Üniversite");
-                                ıd=document.getId();
+                                userName[0] = document.getString("adSoyad");
+                                userUni[0] = document.getString("universite");
+                                urlProfilePicture = document.getString("resim");
+                                userID = document.getId();
+
                             }
-                            UserName.setText(gelenAd);
-                            UserMail.setText(kullanıcıMail);
-                            UserÜniversite.setText(gelenUniversite);
+                            UserName.setText(userName[0]);
+                            UserMail.setText(userMail);
+                            UserUniversite.setText(userUni[0]);
+
+                            if (urlProfilePicture.equals(null)){
+                                imgProfilePicture.setImageResource(R.drawable.profile);
+                            }else{
+                                Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
+                            }
                         } else {
                             Log.w("Error getting documents", task.getException());
                         }
@@ -139,20 +252,20 @@ public class notificationsFragment extends Fragment {
 
     }
 
-
     public void uploadData(){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String gidenAd=UserName.getText().toString();
         String gidenMail=UserMail.getText().toString();
-        String gidenÜniversite=UserÜniversite.getText().toString();
+        String gidenÜniversite= UserUniversite.getText().toString();
 
         Map<String, Object> user = new HashMap<>();
         user.put("adSoyad",gidenAd);
         user.put("email",gidenMail);
         user.put("Üniversite",gidenÜniversite);
+        user.put("resim", urlProfilePicture);
 
 
-        DocumentReference washingtonRef = db.collection("users").document(ıd);
+        DocumentReference washingtonRef = db.collection("users").document(userID);
 
         // Set the "isCapital" field of the city 'DC'
         washingtonRef
@@ -170,5 +283,20 @@ public class notificationsFragment extends Fragment {
                     }
                 });
 
+        getData();
+    }
+
+    private void loadProgressDialog(){
+        progressDialog = new ProgressDialog(getContext(), R.style.CustomProgressDialogStyle);
+        progressDialog.setMessage("Resim yükleniyor...");
+    }
+
+    private void showProgressDialog(){
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog(){
+        progressDialog.dismiss();
     }
 }
+

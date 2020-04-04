@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,9 +36,10 @@ import java.util.UUID;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewUser extends AppCompatActivity {
-    EditText etMail;
     EditText etAdSoyad;
-    EditText etPassword;
+    AutoCompleteTextView autoUniversity;
+
+
     CircleImageView imgProfilePicture;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
@@ -52,14 +55,18 @@ public class NewUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_user);
 
-        etMail=findViewById(R.id.etEmail);
         etAdSoyad=findViewById(R.id.etName);
-        etPassword=findViewById(R.id.etPassword);
+        autoUniversity = findViewById(R.id.autoUniversity);
         imgProfilePicture = findViewById(R.id.imgPP);
 
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.select_dialog_item, getResources().getStringArray(R.array.universite));
+        autoUniversity.setThreshold(1);
+        autoUniversity.setAdapter(arrayAdapter);
 
         loadProgressDialog();
 
@@ -118,6 +125,7 @@ public class NewUser extends AppCompatActivity {
 
                             else {
                                 Toast.makeText(NewUser.this, "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
+                                imgProfilePicture.setImageResource(R.drawable.profile);
                             }
                         }
                     });
@@ -130,16 +138,15 @@ public class NewUser extends AppCompatActivity {
     }
 
     public void btnKaydet(View view){
-        if(etMail.getText().toString().trim().length() == 0 || etAdSoyad.getText().toString().trim().length() ==0){
+        if(autoUniversity.getText().toString().trim().length() == 0 || etAdSoyad.getText().toString().trim().length() ==0){
             Toast.makeText(getApplicationContext(),"LÜtfen Gerekli Alanları Doldurunuz",Toast.LENGTH_LONG).show();
         }else {
-            String email=etMail.getText().toString().trim();
             String adSoyad=etAdSoyad.getText().toString().trim();
-            String password=etPassword.getText().toString().trim();
-            uploadData(email,adSoyad,password);
+            String universite = autoUniversity.getText().toString();
+            uploadData(adSoyad, universite);
         }
     }
-    public void uploadData(String email,String adSoyad,String password){
+    public void uploadData(String adSoyad,String universite){
         String id= UUID.randomUUID().toString();//random ıd
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -148,6 +155,7 @@ public class NewUser extends AppCompatActivity {
         user.put("id",id);
         user.put("adSoyad",adSoyad);
         user.put("email",firebaseUser.getEmail());
+        user.put("universite", universite);
         user.put("resim", urlProfilePicture);
 
         // Yeni belge ekleniyor
