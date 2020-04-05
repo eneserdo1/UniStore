@@ -45,10 +45,7 @@ public class NewUser extends AppCompatActivity {
     FirebaseUser firebaseUser;
     StorageReference storageReference;
 
-
-    ProgressDialog progressDialog;
-
-    String urlProfilePicture = null;
+    String urlProfilePicture = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +64,6 @@ public class NewUser extends AppCompatActivity {
                 android.R.layout.select_dialog_item, getResources().getStringArray(R.array.universite));
         autoUniversity.setThreshold(1);
         autoUniversity.setAdapter(arrayAdapter);
-
-        loadProgressDialog();
 
         if (firebaseUser == null){
             Toast.makeText(this, "Bir meydana geldi. Giriş sayfasına yönlendiriliyorsunuz.", Toast.LENGTH_SHORT).show();
@@ -96,43 +91,34 @@ public class NewUser extends AppCompatActivity {
             final String randName = RandomName.randImageName();
             Log.i("TAG", "random: " + randName);
 
-            showProgressDialog();
-
-            Thread mThread = new Thread(){
+            final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
+            UploadTask uploadTask = refStorage.putFile(filePath);
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void run() {
-                    final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
-                    UploadTask uploadTask = refStorage.putFile(filePath);
-                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()){
-                                throw task.getException();
-                            }
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()){
+                        throw task.getException();
+                    }
 
-                            return refStorage.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                Uri downloadUri = task.getResult();
-                                urlProfilePicture = downloadUri.toString();
-                                Log.i("TAG", "url: " + urlProfilePicture);
-                                Toast.makeText(NewUser.this, "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
-                                Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
-                            }
-
-                            else {
-                                Toast.makeText(NewUser.this, "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
-                                imgProfilePicture.setImageResource(R.drawable.profile);
-                            }
-                        }
-                    });
-                    dismissProgressDialog();
+                    return refStorage.getDownloadUrl();
                 }
-            };
-            mThread.start();
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        urlProfilePicture = downloadUri.toString();
+                        Log.i("TAG", "url: " + urlProfilePicture);
+                        Toast.makeText(NewUser.this, "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
+                        Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
+                    }
+
+                    else {
+                        Toast.makeText(NewUser.this, "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
+                        imgProfilePicture.setImageResource(R.drawable.profile);
+                    }
+                }
+            });
         }
 
     }
@@ -167,18 +153,5 @@ public class NewUser extends AppCompatActivity {
         Intent intent2=new Intent(NewUser.this,HomeActivity.class);
         startActivity(intent2);
         finish();
-    }
-
-    private void loadProgressDialog(){
-        progressDialog = new ProgressDialog(this, R.style.CustomProgressDialogStyle);
-        progressDialog.setMessage("Resim yükleniyor...");
-    }
-
-    private void showProgressDialog(){
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog(){
-        progressDialog.dismiss();
     }
 }
