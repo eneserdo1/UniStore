@@ -4,92 +4,94 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_2"
     tools:context=".ui.notifications.NotificationsFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background_2"
-        android:orientation="vertical">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="250dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgPP"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/profile"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etProfilAdsoyad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25dp"
+            android:hint="Ad Soyad"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgPP"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/etProfilMail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="E-posta"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/etProfilAdsoyad"
+            app:layout_constraintHorizontal_bias="0.467"
+            app:layout_constraintStart_toStartOf="@+id/etProfilAdsoyad"
+            app:layout_constraintTop_toBottomOf="@+id/etProfilAdsoyad" />
+
+        <AutoCompleteTextView
+            android:id="@+id/autoUniversity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Üniversite"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="@+id/etProfilMail"
+            app:layout_constraintStart_toStartOf="@+id/etProfilMail"
+            app:layout_constraintTop_toBottomOf="@+id/etProfilMail" />
+
+        <Button
+            android:id="@+id/btnProfilKaydet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:text="kaydet"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/autoUniversity"
+            app:layout_constraintStart_toStartOf="@+id/autoUniversity"
+            app:layout_constraintTop_toBottomOf="@+id/autoUniversity" />
+
+        <Button
+            android:id="@+id/btnProfilDüzenle"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:backgroundTint="@android:color/holo_orange_light"
+            android:text="düzenle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/imgPP"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/imgPP"
+            app:layout_constraintTop_toBottomOf="@+id/imgPP" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            <EditText
-                android:id="@+id/etProfilAdsoyad"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="24dp"
-                android:ems="10"
-                android:hint="Ad Soyad"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/etProfilMail"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="25dp"
-                android:ems="10"
-                android:hint="E-posta"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etProfilAdsoyad" />
 
-            <EditText
-                android:id="@+id/etProfilÜniversite"
-                android:layout_width="220dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="18dp"
-                android:layout_marginEnd="25dp"
-                android:ems="10"
-                android:hint="Üniversite"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etProfilMail" />
-
-            <Button
-                android:id="@+id/btnProfilKaydet"
-                android:layout_width="220dp"
-                android:layout_height="38dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="24dp"
-                android:backgroundTint="@android:color/holo_orange_light"
-                android:text="kaydet"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etProfilÜniversite" />
-
-            <Button
-                android:id="@+id/btnProfilDüzenle"
-                android:layout_width="123dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="52dp"
-                android:backgroundTint="@android:color/holo_orange_light"
-                android:text="düzenle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageProfil" />
-
-            <ImageView
-                android:id="@+id/imageProfil"
-                android:layout_width="122dp"
-                android:layout_height="123dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
-                android:src="@drawable/kmra"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,6 +66,24 @@
                 android:textColorHint="@color/colorText" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintTextColor="@color/colorText"
+            android:textColorHint="@color/colorText"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Üniversite"
+                android:textColor="@color/colorText"
+                android:textColorHint="@color/colorText"
+                android:id="@+id/autoUniversity"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- location infos -->
 
 
