@@ -1,7 +1,9 @@
 package com.eneserdogan.unistore;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,10 +69,8 @@ public class notificationsFragment extends Fragment {
     FirebaseFirestore firebaseFirestore;
     StorageReference storageReference;
 
-    ProgressDialog progressDialog;
-
     String userID;
-    String urlProfilePicture = null;
+    String urlProfilePicture = "";
 
     public notificationsFragment() {
     }
@@ -108,8 +109,6 @@ public class notificationsFragment extends Fragment {
 
         getData();
 
-        loadProgressDialog();
-
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
                 android.R.layout.select_dialog_item, getResources().getStringArray(R.array.universite));
         UserUniversite.setThreshold(1);
@@ -125,7 +124,7 @@ public class notificationsFragment extends Fragment {
         btnDüzenle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                duzenlemeyiAc();
+                duzenlemeyiAc(true);
             }
         });
 
@@ -134,9 +133,10 @@ public class notificationsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 uploadData();
-                btnKaydet.setVisibility(View.INVISIBLE);
+                duzenlemeyiAc(false);
             }
         });
+
         return view;
     }
 
@@ -154,44 +154,35 @@ public class notificationsFragment extends Fragment {
             final String randName = RandomName.randImageName();
             Log.i("TAG", "random: " + randName);
 
-            showProgressDialog();
-
-            Thread mThread = new Thread(){
+            final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
+            UploadTask uploadTask = refStorage.putFile(filePath);
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
-                public void run() {
-                    final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
-                    UploadTask uploadTask = refStorage.putFile(filePath);
-                    Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()){
-                                throw task.getException();
-                            }
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()){
+                        throw task.getException();
+                    }
 
-                            return refStorage.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()){
-                                Uri downloadUri = task.getResult();
-                                urlProfilePicture = downloadUri.toString();
-                                Log.i("TAG", "url: " + urlProfilePicture);
-                                Toast.makeText(getContext(), "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
-                                Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
-                                uploadData();
-                            }
-
-                            else {
-                                Toast.makeText(getContext(), "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
-                                imgProfilePicture.setImageResource(R.drawable.profile);
-                            }
-                        }
-                    });
-                    dismissProgressDialog();
+                    return refStorage.getDownloadUrl();
                 }
-            };
-            mThread.start();
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        urlProfilePicture = downloadUri.toString();
+                        Log.i("TAG", "url: " + urlProfilePicture);
+                        Toast.makeText(getContext(), "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
+                        Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
+                        uploadData();
+                    }
+
+                    else {
+                        Toast.makeText(getContext(), "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
+                        imgProfilePicture.setImageResource(R.drawable.profile);
+                    }
+                }
+            });
         }
     }
 
@@ -208,14 +199,24 @@ public class notificationsFragment extends Fragment {
         btnKaydet.setVisibility(View.GONE);
         UserName.setEnabled(false);
         UserUniversite.setEnabled(false);
+        imgProfilePicture.setClickable(false);
     }
 
-    private void duzenlemeyiAc() {
-        UserName.setEnabled(true);
-        UserUniversite.setEnabled(true);
-
-        btnKaydet.setVisibility(View.VISIBLE);
-        btnDüzenle.setVisibility(View.GONE);
+    private void duzenlemeyiAc(boolean durum) {
+        if (durum){
+            UserName.setEnabled(true);
+            UserUniversite.setEnabled(true);
+            btnKaydet.setVisibility(View.VISIBLE);
+            btnDüzenle.setVisibility(View.GONE);
+            imgProfilePicture.setClickable(true);
+        }
+        else{
+            UserName.setEnabled(false);
+            UserUniversite.setEnabled(false);
+            btnKaydet.setVisibility(View.GONE);
+            btnDüzenle.setVisibility(View.VISIBLE);
+            imgProfilePicture.setClickable(false);
+        }
     }
 
     public void getData(){
@@ -241,7 +242,7 @@ public class notificationsFragment extends Fragment {
                             UserMail.setText(userMail);
                             UserUniversite.setText(userUni[0]);
 
-                            if (urlProfilePicture.equals(null)){
+                            if (urlProfilePicture.equals("")){
                                 imgProfilePicture.setImageResource(R.drawable.profile);
                             }else{
                                 Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
@@ -263,7 +264,7 @@ public class notificationsFragment extends Fragment {
         Map<String, Object> user = new HashMap<>();
         user.put("adSoyad",gidenAd);
         user.put("email",gidenMail);
-        user.put("Üniversite",gidenÜniversite);
+        user.put("universite",gidenÜniversite);
         user.put("resim", urlProfilePicture);
 
 
@@ -286,19 +287,6 @@ public class notificationsFragment extends Fragment {
                 });
 
         getData();
-    }
-
-    private void loadProgressDialog(){
-        progressDialog = new ProgressDialog(getContext(), R.style.CustomProgressDialogStyle);
-        progressDialog.setMessage("Resim yükleniyor...");
-    }
-
-    private void showProgressDialog(){
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog(){
-        progressDialog.dismiss();
     }
 }
 

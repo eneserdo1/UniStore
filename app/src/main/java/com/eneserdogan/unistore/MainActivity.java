@@ -28,9 +28,6 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     Boolean torf=false;
 
-    ProgressDialog progressDialog;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseFirestore=FirebaseFirestore.getInstance();
-
-        loadProgressDialog();
     }
     public void addUser(View view){
         Intent ıntent=new Intent(MainActivity.this,verifyMailActivity.class);
@@ -62,79 +57,56 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        showProgressDialog();
-
-        Thread mThread = new Thread() {
+        CollectionReference collectionReference=firebaseFirestore.collection("users");
+        collectionReference.whereEqualTo("email",str_email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void run() {
-                CollectionReference collectionReference=firebaseFirestore.collection("users");
-                collectionReference.whereEqualTo("email",str_email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    QuerySnapshot document = task.getResult();
+                    if(document != null){
+                        List custom = document.getDocuments();
+                        if (custom.size() == 0){
+                            torf = true;
+                            System.out.println("getdata girdi");
+                        }
+                    }
+                }
+            }
+        });
+
+        firebaseAuth.signInWithEmailAndPassword(str_email,str_password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            QuerySnapshot document = task.getResult();
-                            if(document != null){
-                                List custom = document.getDocuments();
-                                if (custom.size() == 0){
-                                    torf = true;
-                                    System.out.println("getdata girdi");
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                                if (str_email.matches(emailPattern)) {
+                                    if (torf == false){
+                                        startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                                        System.out.println("false girdi");
+                                        finish();
+
+                                    }else {
+                                        startActivity(new Intent(MainActivity.this, NewUser.class));
+                                        System.out.println("else girdi");
+                                        finish();
+
+                                    }
                                 }
+                            }else{
+                                Toast.makeText(MainActivity.this, "Lütfen mailinizi doğrulayınız."
+                                        , Toast.LENGTH_LONG).show();
                             }
+                        }else{
+                            Toast.makeText(MainActivity.this, task.getException().getMessage()
+                                    , Toast.LENGTH_LONG).show();
                         }
                     }
                 });
-
-                firebaseAuth.signInWithEmailAndPassword(str_email,str_password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()){
-                                    if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                                        if (str_email.matches(emailPattern)) {
-                                            if (torf == false){
-                                                startActivity(new Intent(MainActivity.this,HomeActivity.class));
-                                                System.out.println("false girdi");
-                                                finish();
-
-                                            }else {
-                                                startActivity(new Intent(MainActivity.this, NewUser.class));
-                                                System.out.println("else girdi");
-                                                finish();
-
-                                            }
-                                        }
-                                    }else{
-                                        Toast.makeText(MainActivity.this, "Lütfen mailinizi doğrulayınız."
-                                                , Toast.LENGTH_LONG).show();
-                                    }
-                                }else{
-                                    Toast.makeText(MainActivity.this, task.getException().getMessage()
-                                            , Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-
-                dismissProgressDialog();
-            }
-        };
-        mThread.start();
     }
 
     public void resetPassword(View view) {
         Intent intent = new Intent(getApplicationContext(), ForgotPasswordActivity.class);
         startActivity(intent);
-    }
-
-    private void loadProgressDialog(){
-        progressDialog = new ProgressDialog(this, R.style.CustomProgressDialogStyle);
-        progressDialog.setMessage("Giriş yapılıyor...");
-    }
-
-    private void showProgressDialog(){
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog(){
-        progressDialog.dismiss();
     }
 }

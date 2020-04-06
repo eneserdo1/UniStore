@@ -23,8 +23,6 @@ public class verifyMailActivity extends AppCompatActivity {
     String emailPattern = "[A-Za-z0-9+_.-]+@[a-zA-Z0-9.-]+\\.+edu+\\.+tr+";
     FirebaseAuth firebaseAuth;
 
-    ProgressDialog progressDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +31,6 @@ public class verifyMailActivity extends AppCompatActivity {
         email=findViewById(R.id.etVerifyMail);
         password=findViewById(R.id.etVerifyPassword);
         firebaseAuth=FirebaseAuth.getInstance();
-
-        loadProgressDialog();
     }
 
     public void sendMail(View view){
@@ -48,62 +44,39 @@ public class verifyMailActivity extends AppCompatActivity {
             return;
         }
 
-        showProgressDialog();
+        firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),
+                password.getText().toString())
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            firebaseAuth.getCurrentUser().sendEmailVerification()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(getApplicationContext(), "Lütfen doğrulama için e-postanızı kontrol edin ",
+                                                        Toast.LENGTH_LONG).show();
+                                                // email.setText("");
+                                                //password.setText("");
+                                                //Intent ıntent=new Intent(verifyMailActivity.this,NewUser.class);
+                                                //  startActivity(ıntent);
 
-        Thread mThread = new Thread(){
-            @Override
-            public void run() {
-                firebaseAuth.createUserWithEmailAndPassword(email.getText().toString(),
-                        password.getText().toString())
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    firebaseAuth.getCurrentUser().sendEmailVerification()
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
-                                                        Toast.makeText(getApplicationContext(), "\n" + "Lütfen doğrulama için e-postanızı kontrol edin ",
-                                                                Toast.LENGTH_LONG).show();
-                                                        // email.setText("");
-                                                        //password.setText("");
-                                                        //Intent ıntent=new Intent(verifyMailActivity.this,NewUser.class);
-                                                        //  startActivity(ıntent);
-
-                                                    }else{
-                                                        Toast.makeText(verifyMailActivity.this,  task.getException().getMessage(),
-                                                                Toast.LENGTH_LONG).show();
-                                                    }
-                                                }
-                                            });
-                                }else {
-                                    Toast.makeText(verifyMailActivity.this, task.getException().getMessage(),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-                dismissProgressDialog();
-            }
-        };
-
-        mThread.start();
+                                            }else{
+                                                Toast.makeText(verifyMailActivity.this,  task.getException().getMessage(),
+                                                        Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                        }else {
+                            Toast.makeText(verifyMailActivity.this, task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    private void loadProgressDialog(){
-        progressDialog = new ProgressDialog(this, R.style.CustomProgressDialogStyle);
-        progressDialog.setMessage("Kayıt ediliyor...");
-    }
-
-    private void showProgressDialog(){
-        progressDialog.show();
-    }
-
-    private void dismissProgressDialog(){
-        progressDialog.dismiss();
     }
 }

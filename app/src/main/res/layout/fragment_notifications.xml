@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:hint="E-posta"
+            android:importantForAutofill="yes"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="@+id/etProfilAdsoyad"
             app:layout_constraintHorizontal_bias="0.467"
