@@ -10,58 +10,38 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:layout_gravity="center_vertical"
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:background="@color/colorAccent">
+        android:background="@drawable/background_2">
 
+
+        <!-- email input -->
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/logo"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@drawable/logo" />
 
-        <!-- email input -->
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            app:hintTextColor="@color/colorText"
-            android:textColorHint="@color/colorText">
-
-            <EditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email"
-                android:textColorHint="@color/colorText"
-                android:textColor="@color/colorText"
-                android:inputType="textEmailAddress" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
 
         <!-- password input -->
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            app:hintTextColor="@color/colorText"
-            android:textColorHint="@color/colorText">
-
-            <EditText android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:textColorHint="@color/colorText"
-                android:textColor="@color/colorText"
-                android:hint="Şifre"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            android:inputType="textPassword"
+            android:hint="Şifre"
+            android:textColor="@color/colorText"/>
 
         <Button
             android:id="@+id/button"
@@ -72,7 +52,7 @@
             android:onClick="login"
             android:padding="12dp"
             android:textSize="20dp"
-            android:textColor="@color/colorText"
+            android:textColor="@color/colorTextSecondrary"
             android:background="@color/colorPrimaryDark"
             android:text="Giriş Yap" />
 
@@ -95,12 +75,6 @@
             android:gravity="center"
             android:textColor="@color/colorText"
             android:textSize="16dp"/>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

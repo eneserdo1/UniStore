@@ -7,76 +7,57 @@
     tools:context=".verifyMailActivity">
 
     <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:layout_gravity="center_vertical"
-    android:paddingTop="56dp"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    android:background="@color/colorAccent">
-
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_marginBottom="50dp"
-        android:layout_gravity="center_horizontal"
-        app:srcCompat="@drawable/logo"/>
-
-
-
-    <!-- email input -->
-    <com.google.android.material.textfield.TextInputLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        app:hintTextColor="@color/colorText"
-        android:textColorHint="@color/colorText">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:paddingTop="56dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:background="@drawable/background_2">
 
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@drawable/logo"/>
+
+
+        <!-- email input -->
         <EditText
             android:id="@+id/etVerifyMail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
-            android:textColorHint="@color/colorText"
             android:textColor="@color/colorText"
             android:inputType="textEmailAddress" />
-    </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- password input -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        app:hintTextColor="@color/colorText"
-        android:textColorHint="@color/colorText">
-
+        <!-- password input -->
         <EditText android:id="@+id/etVerifyPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            android:textColorHint="@color/colorText"
             android:textColor="@color/colorText"
             android:hint="Şifre"/>
-    </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btnVerify"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:padding="12dp"
-        android:textSize="20dp"
-        android:textColor="@color/colorText"
-        android:background="@color/colorPrimaryDark"
-        android:onClick="sendMail"
-        android:text="Kayıt Ol" />
+
+
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:padding="12dp"
+            android:textSize="20dp"
+            android:textColor="@color/colorTextSecondrary"
+            android:background="@color/colorPrimaryDark"
+            android:onClick="sendMail"
+            android:text="Kayıt Ol" />
 
         <TextView android:id="@+id/link_forgotPassword"
             android:layout_width="fill_parent"
@@ -88,6 +69,6 @@
             android:textColor="@color/colorText"
             android:textSize="14dp"/>
 
-</LinearLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

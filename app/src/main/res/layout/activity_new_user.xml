@@ -15,7 +15,7 @@
         android:paddingTop="56dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
-        android:background="@color/colorAccent">
+        android:background="@drawable/background_2">
 
         <!-- Circle image for pp  -->
 
@@ -48,41 +48,20 @@
 
         </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <EditText
+            android:id="@+id/etName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintTextColor="@color/colorText"
-            android:textColorHint="@color/colorText"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:hint="Ad Soyad"
+            android:inputType="text"
+            android:textColor="@color/colorText"/>
 
-            <EditText
-                android:id="@+id/etName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ad Soyad"
-                android:inputType="text"
-                android:textColor="@color/colorText"
-                android:textColorHint="@color/colorText" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
+        <AutoCompleteTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:hintTextColor="@color/colorText"
-            android:textColorHint="@color/colorText"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
-
-            <AutoCompleteTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Üniversite"
-                android:textColor="@color/colorText"
-                android:textColorHint="@color/colorText"
-                android:id="@+id/autoUniversity"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Üniversite"
+            android:textColor="@color/colorText"
+            android:id="@+id/autoUniversity" />
 
         <!-- location infos -->
 
@@ -106,7 +85,7 @@
             android:onClick="btnKaydet"
             android:padding="12dp"
             android:text="Kayıt Ol"
-            android:textColor="@color/colorText"
+            android:textColor="@color/colorTextSecondrary"
             android:textSize="20dp" />
 
     </LinearLayout>
