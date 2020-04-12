@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
     Boolean torf=false;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
 
         email=findViewById(R.id.etEmail);
         password=findViewById(R.id.etPassword);
+        progressBar=findViewById(R.id.progressBar);
+
+        progressBar.setVisibility(View.INVISIBLE);
 
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseFirestore=FirebaseFirestore.getInstance();
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     public void login(View view){
         final String str_email = email.getText().toString();
         final String str_password = password.getText().toString();
+        progressBar.setVisibility(View.VISIBLE);
 
         if(TextUtils.isEmpty(str_email)){
             Toast.makeText(this, "Lütfen mailinizi giriniz!",Toast.LENGTH_SHORT).show();
@@ -58,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         CollectionReference collectionReference=firebaseFirestore.collection("users");
-        collectionReference.whereEqualTo("email",str_email).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        collectionReference.whereEqualTo("email",email.getText().toString()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -74,23 +80,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        firebaseAuth.signInWithEmailAndPassword(str_email,str_password)
+        firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.GONE);
                         if(task.isSuccessful()){
                             if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                                if (str_email.matches(emailPattern)) {
+                                if (email.getText().toString().trim().matches(emailPattern)) {
                                     if (torf == false){
                                         startActivity(new Intent(MainActivity.this,HomeActivity.class));
                                         System.out.println("false girdi");
                                         finish();
-
                                     }else {
                                         startActivity(new Intent(MainActivity.this, NewUser.class));
                                         System.out.println("else girdi");
                                         finish();
-
                                     }
                                 }
                             }else{
