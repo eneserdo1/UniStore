@@ -231,6 +231,8 @@ public class notificationsFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            Log.d("users length: ", String.valueOf(task.getResult().size()));
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 userName[0] = document.getString("adSoyad");
                                 userUni[0] = document.getString("universite");

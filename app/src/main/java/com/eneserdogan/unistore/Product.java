@@ -41,10 +41,11 @@ public class Product {
 
     public static ArrayList<Product> getData() {
         ArrayList<Product> productList = new ArrayList<Product>();
-        int productImages[] = {R.drawable.gelecegiyazanlar, R.drawable.paycell, R.drawable.tvplus,R.drawable.dergilik,R.drawable.bip,R.drawable.gnc,R.drawable.hesabim,R.drawable.sim,R.drawable.lifebox,R.drawable.merhabaumut,R.drawable.yaani,R.drawable.hayalortagim,R.drawable.gollercepte,R.drawable.piri};
+        // pull yaptığımda resimleri çekmemiş hata vermesin diye yorum satırına aldım
+        //int productImages[] = {R.drawable.gelecegiyazanlar, R.drawable.paycell, R.drawable.tvplus,R.drawable.dergilik,R.drawable.bip,R.drawable.gnc,R.drawable.hesabim,R.drawable.sim,R.drawable.lifebox,R.drawable.merhabaumut,R.drawable.yaani,R.drawable.hayalortagim,R.drawable.gollercepte,R.drawable.piri};
         String[] productNames = {"Geleceği Yazanlar", "Paycell", "Tv+","Dergilik","Bip","GNC","Hesabım","Sim","LifeBox","Merhaba Umut","Yaani","Hayal Ortağım","Goller Cepte","Piri"};
 
-        for (int i = 0; i < productImages.length; i++) {
+        /*for (int i = 0; i < productImages.length; i++) {
             Product temp = new Product();
             temp.setImageID(productImages[i]);
             temp.setProductName(productNames[i]);
@@ -53,6 +54,8 @@ public class Product {
             productList.add(temp);
 
         }
+        
+         */
 
 
         return productList;
