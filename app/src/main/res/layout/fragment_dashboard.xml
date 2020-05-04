@@ -1,103 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/arkaplan"
-    tools:context=".ui.dashboard.DashboardFragment" >
+    android:background="@drawable/background_2"
+    tools:context=".ui.dashboard.DashboardFragment">
 
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginEnd="42dp"
-        android:src="@drawable/kamera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        >
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="42dp"
-        android:src="@drawable/kamera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="55dp"
-        android:src="@drawable/kamera"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/kamera"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/kamera"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="417dp"
-        android:layout_height="406dp"
-        android:layout_marginBottom="49dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <EditText
-            android:id="@+id/etİlanBaşlık"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:ems="10"
-            android:hint="Başlık"
-            android:inputType="textPersonName" />
-
-        <Spinner
-            android:id="@+id/SpİlanKategori"
-            android:layout_width="match_parent"
-            android:layout_height="90dp" />
-
-        <EditText
-            android:id="@+id/etİlanAcıklama"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:ems="10"
-            android:hint="Açıklama"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/etİlanFiyat"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:ems="10"
-            android:hint="Fiyat"
-            android:inputType="textPersonName" />
-
-        <Button
-            android:id="@+id/btnİlanYükle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_orange_dark"
-            android:text="ilanı yüke" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="İlan Detayı"
+                android:textAlignment="center"
+                android:textColor="@color/colorText"
+                android:textSize="40dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerImages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_images_card" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="25dp">
+
+                <Spinner
+                    android:id="@+id/spinKategori"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginVertical="5dp"
+                    android:autofillHints="Kategori Seçiniz."
+                    android:background="@drawable/customedittext"/>
+
+                <EditText
+                    android:id="@+id/etBaslik"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/customedittext"
+                    android:hint="Başlık"
+                    android:textAlignment="center"
+                    android:layout_marginVertical="5dp"/>
+
+                <EditText
+                    android:id="@+id/etFiyat"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/customedittext"
+                    android:hint="Ürün Fiyatı"
+                    android:textAlignment="center"
+                    android:layout_marginVertical="5dp"/>
+
+                <EditText
+                    android:id="@+id/etAciklama"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:background="@drawable/customedittext"
+                    android:hint="Ürün Açıklaması"
+                    android:gravity="top"
+                    android:padding="5dp"
+                    android:layout_marginVertical="5dp"/>
+                
+                <Button
+                    android:id="@+id/btnUrunEkle"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="10dp"
+                    android:text="Ürün Ekle" />
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

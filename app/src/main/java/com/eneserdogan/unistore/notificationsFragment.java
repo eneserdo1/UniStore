@@ -1,20 +1,14 @@
 package com.eneserdogan.unistore;
 
+
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +18,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import com.eneserdogan.unistore.Models.Picture;
 import com.eneserdogan.unistore.Utils.RandomName;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,21 +27,16 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-
 
 
 public class notificationsFragment extends Fragment {
@@ -55,6 +44,10 @@ public class notificationsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
+
+    private final static String TAG = notificationsFragment.class.getSimpleName();
+
+    private final static String path_of_PP = "profilePicture";
 
     View view;
     EditText UserName;
@@ -69,8 +62,8 @@ public class notificationsFragment extends Fragment {
     FirebaseFirestore firebaseFirestore;
     StorageReference storageReference;
 
-    String userID;
-    String urlProfilePicture = "";
+    String namePP = "";
+    String urlPP = "";
 
     public notificationsFragment() {
     }
@@ -138,15 +131,56 @@ public class notificationsFragment extends Fragment {
         });
 
         return view;
+
+    }
+
+    void loadWidgets(){
+
+        UserName=view.findViewById(R.id.etProfilAdsoyad);
+        UserMail=view.findViewById(R.id.etProfilMail);
+        UserUniversite=view.findViewById(R.id.autoUniversity);
+        btnDüzenle=view.findViewById(R.id.btnProfilDüzenle);
+        btnKaydet=view.findViewById(R.id.btnProfilKaydet);
+        imgProfilePicture = view.findViewById(R.id.imgPP);
+
+        UserMail.setEnabled(false);
+
+        btnKaydet.setVisibility(View.GONE);
+        UserName.setEnabled(false);
+        UserUniversite.setEnabled(false);
+        imgProfilePicture.setClickable(false);
+
+    }
+
+    private void duzenlemeyiAc(boolean durum) {
+
+        if (durum){
+            UserName.setEnabled(true);
+            UserUniversite.setEnabled(true);
+            btnKaydet.setVisibility(View.VISIBLE);
+            btnDüzenle.setVisibility(View.GONE);
+            imgProfilePicture.setClickable(true);
+        }
+        else{
+            UserName.setEnabled(false);
+            UserUniversite.setEnabled(false);
+            btnKaydet.setVisibility(View.GONE);
+            btnDüzenle.setVisibility(View.VISIBLE);
+            imgProfilePicture.setClickable(false);
+        }
+
     }
 
     private void openGallery() {
+
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, 5);
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 5 && resultCode == Activity.RESULT_OK) {
             final Uri filePath = data.getData();
@@ -154,7 +188,7 @@ public class notificationsFragment extends Fragment {
             final String randName = RandomName.randImageName();
             Log.i("TAG", "random: " + randName);
 
-            final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
+            final StorageReference refStorage = storageReference.child(firebaseUser.getEmail()).child("profilePicture").child(randName + ".jpg");
             UploadTask uploadTask = refStorage.putFile(filePath);
             Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -170,11 +204,23 @@ public class notificationsFragment extends Fragment {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
-                        urlProfilePicture = downloadUri.toString();
-                        Log.i("TAG", "url: " + urlProfilePicture);
+
+                        Log.i(TAG, "url: " + downloadUri);
                         Toast.makeText(getContext(), "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
-                        Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
+
+                        Picasso.get().load(downloadUri).resize(500,500).into(imgProfilePicture);
+
+                        if (!namePP.equals("")){
+                            deleteOldPhoto(namePP);
+                            System.out.println("1resim ismi: " + namePP);
+                        }
+
+                        namePP = randName + ".jpg";
+                        System.out.println("2resim ismi: " + namePP);
+                        urlPP = String.valueOf(downloadUri);
+
                         uploadData();
+                        duzenlemeyiAc(false);
                     }
 
                     else {
@@ -184,111 +230,112 @@ public class notificationsFragment extends Fragment {
                 }
             });
         }
-    }
 
-    void loadWidgets(){
-        UserName=view.findViewById(R.id.etProfilAdsoyad);
-        UserMail=view.findViewById(R.id.etProfilMail);
-        UserUniversite=view.findViewById(R.id.autoUniversity);
-        btnDüzenle=view.findViewById(R.id.btnProfilDüzenle);
-        btnKaydet=view.findViewById(R.id.btnProfilKaydet);
-        imgProfilePicture = view.findViewById(R.id.imgPP);
-
-        UserMail.setEnabled(false);
-
-        btnKaydet.setVisibility(View.GONE);
-        UserName.setEnabled(false);
-        UserUniversite.setEnabled(false);
-        imgProfilePicture.setClickable(false);
-    }
-
-    private void duzenlemeyiAc(boolean durum) {
-        if (durum){
-            UserName.setEnabled(true);
-            UserUniversite.setEnabled(true);
-            btnKaydet.setVisibility(View.VISIBLE);
-            btnDüzenle.setVisibility(View.GONE);
-            imgProfilePicture.setClickable(true);
-        }
-        else{
-            UserName.setEnabled(false);
-            UserUniversite.setEnabled(false);
-            btnKaydet.setVisibility(View.GONE);
-            btnDüzenle.setVisibility(View.VISIBLE);
-            imgProfilePicture.setClickable(false);
-        }
     }
 
     public void getData(){
-        final String userMail = firebaseUser.getEmail();
-        final String[] userName = new String[1];
-        final String[] userUni = new String[1];
 
-        firebaseFirestore.collection("users")
-                .whereEqualTo("email", userMail)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("users length: ", String.valueOf(task.getResult().size()));
+        firebaseFirestore.
+                collection("users").
+                document(firebaseUser.getUid()).
+                get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()){
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                userName[0] = document.getString("adSoyad");
-                                userUni[0] = document.getString("universite");
-                                urlProfilePicture = document.getString("resim");
-                                userID = document.getId();
+                        UserName.setText(document.getString("name"));
+                        UserMail.setText(document.getString("email"));
+                        UserUniversite.setText(document.getString("university"));
 
-                            }
-                            UserName.setText(userName[0]);
-                            UserMail.setText(userMail);
-                            UserUniversite.setText(userUni[0]);
+                        HashMap map = (HashMap) document.get("picture");
+                        if (map.get("urlPicture").equals("")){
+                            imgProfilePicture.setImageResource(R.drawable.profile);
+                        }else{
+                            namePP = (String) map.get("namePicture");
+                            urlPP = (String) map.get("urlPicture");
 
-                            if (urlProfilePicture.equals("")){
-                                imgProfilePicture.setImageResource(R.drawable.profile);
-                            }else{
-                                Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
-                            }
-                        } else {
-                            Log.w("Error getting documents", task.getException());
+                            Picasso.get().load(urlPP).resize(500,500).into(imgProfilePicture);
                         }
+                    } else {
+                        Log.d(TAG, "Veri bulunamadı.");
                     }
-                });
+                } else {
+                    Log.d(TAG, "İşlem başarısız.");
+                }
+            }
+        });
 
     }
 
     public void uploadData(){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String gidenAd=UserName.getText().toString();
-        String gidenMail=UserMail.getText().toString();
-        String gidenÜniversite= UserUniversite.getText().toString();
 
-        Map<String, Object> user = new HashMap<>();
-        user.put("adSoyad",gidenAd);
-        user.put("email",gidenMail);
-        user.put("universite",gidenÜniversite);
-        user.put("resim", urlProfilePicture);
+        String name=UserName.getText().toString();
+        String university= UserUniversite.getText().toString();
 
+        if (name.length() == 0 || university.length() == 0){
+            Toast.makeText(getActivity(), "Lütfen alanları boş bırakmayınız.", Toast.LENGTH_SHORT).show();
+        } else {
+            if (controlUniversity(university)){
+                Map<String, Object> updatedData = new HashMap<>();
+                updatedData.put("name", name);
+                updatedData.put("university", university);
+                updatedData.put("picture", new Picture(namePP, urlPP));
 
-        DocumentReference washingtonRef = db.collection("users").document(userID);
-
-        // Set the "isCapital" field of the city 'DC'
-        washingtonRef
-                .update(user)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Toast.makeText(getActivity(),"Başarıyla Güncellendi",Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
+                firebaseFirestore.collection("users").
+                        document(firebaseUser.getUid()).update(updatedData).
+                        addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getActivity(), "Başarıyla güncellendi.", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getActivity(),"Hata Oluştu Güncellenemedi",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), "Güncelleme başarısız.", Toast.LENGTH_SHORT).show();
+
+                        getData();
                     }
                 });
-
-        getData();
+            } else {
+                Toast.makeText(getActivity(), "Lütfen geçerli bir üniversite adı giriniz.", Toast.LENGTH_SHORT).show();
+                getData();
+            }
+        }
     }
+
+    public void deleteOldPhoto(String namePP){
+
+        StorageReference refOfDeleted = storageReference.child(firebaseUser.getEmail()).child(path_of_PP).child(namePP);
+
+        refOfDeleted.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "Silme başarılı");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "Silme başarısız");
+            }
+        });
+
+    }
+
+    private boolean controlUniversity(String university){
+        boolean durum = false;
+
+        for (String str : getResources().getStringArray(R.array.universite)){
+            if (str.equals(university)){
+                durum = true;
+                break;
+            }
+        }
+
+        return durum;
+    }
+
 }
 

@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
     String emailPattern = "[A-Za-z0-9+_.-]+@[a-zA-Z0-9.-]+\\.+edu+\\.+tr+";
     EditText email;
     EditText password;
-    private FirebaseAuth firebaseAuth;
+    FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
-    Boolean torf=false;
     ProgressBar progressBar;
 
+    boolean durum = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,16 +70,22 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     QuerySnapshot document = task.getResult();
                     if(document != null){
+                        System.out.println("döküment sayısı1: " + document.size());
+                        System.out.println("döküment sayısı2: " + document.getDocuments().size());
                         List custom = document.getDocuments();
                         if (custom.size() == 0){
-                            torf = true;
+                            durum = false;
                             System.out.println("getdata girdi");
                         }
+
+                        login(durum);
                     }
                 }
             }
         });
+    }
 
+    public void login(final Boolean durum){
         firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -88,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                         if(task.isSuccessful()){
                             if(firebaseAuth.getCurrentUser().isEmailVerified()){
                                 if (email.getText().toString().trim().matches(emailPattern)) {
-                                    if (torf == false){
+                                    if (durum){
                                         startActivity(new Intent(MainActivity.this,HomeActivity.class));
                                         System.out.println("false girdi");
                                         finish();
