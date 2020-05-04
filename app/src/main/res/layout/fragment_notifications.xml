@@ -27,6 +27,7 @@
             app:civ_border_color="#FF000000"
             app:civ_border_width="1dp"
             app:layout_constraintStart_toStartOf="parent"
+            android:contextClickable="false"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
@@ -37,6 +38,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="25dp"
             android:hint="Ad Soyad"
+            android:textSize="14dp"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imgPP"
@@ -48,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:hint="E-posta"
+            android:textSize="14dp"
             android:importantForAutofill="yes"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="@+id/etProfilAdsoyad"
@@ -61,6 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:hint="Üniversite"
+            android:textSize="14dp"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="@+id/etProfilMail"
             app:layout_constraintStart_toStartOf="@+id/etProfilMail"

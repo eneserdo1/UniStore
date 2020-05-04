@@ -3,9 +3,7 @@ package com.eneserdogan.unistore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,10 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import com.eneserdogan.unistore.Models.Picture;
+import com.eneserdogan.unistore.Models.User;
 import com.eneserdogan.unistore.Utils.RandomName;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,24 +29,22 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class NewUser extends AppCompatActivity {
+    private final static String TAG = "NewUser";
+
     EditText etAdSoyad;
     AutoCompleteTextView autoUniversity;
-
-
     CircleImageView imgProfilePicture;
+
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
+    FirebaseFirestore db;
     StorageReference storageReference;
 
-    String urlProfilePicture = "";
+    String namePP = "";
+    String urlPP = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +57,7 @@ public class NewUser extends AppCompatActivity {
 
         firebaseAuth=FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+        db = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
@@ -86,72 +86,97 @@ public class NewUser extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 5 && resultCode == Activity.RESULT_OK) {
-            final Uri filePath = data.getData();
-            Log.i("TAG", "resim: " + filePath);
-            final String randName = RandomName.randImageName();
-            Log.i("TAG", "random: " + randName);
+            if (data != null) {
 
-            final StorageReference refStorage = storageReference.child("profilePictures").child(randName + ".jpg");
-            UploadTask uploadTask = refStorage.putFile(filePath);
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()){
-                        throw task.getException();
-                    }
+                Uri filePath = data.getData();
+                final String randName = RandomName.randImageName();
 
-                    return refStorage.getDownloadUrl();
-                }
-            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()){
-                        Uri downloadUri = task.getResult();
-                        urlProfilePicture = downloadUri.toString();
-                        Log.i("TAG", "url: " + urlProfilePicture);
-                        Toast.makeText(NewUser.this, "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
-                        Picasso.get().load(urlProfilePicture).resize(500,500).into(imgProfilePicture);
+                final StorageReference refStorage = storageReference.child(firebaseUser.getEmail()).child("profilePicture").child(randName + ".jpg");
+                UploadTask uploadTask = refStorage.putFile(filePath);
+                Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()){
+                            throw task.getException();
+                        }
+                        return refStorage.getDownloadUrl();
                     }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
 
-                    else {
-                        Toast.makeText(NewUser.this, "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
-                        imgProfilePicture.setImageResource(R.drawable.profile);
+                        if (task.isSuccessful()){
+
+                            Uri downloadUri = task.getResult();
+                            Log.d(TAG, "Image Name: " + randName + ".jpg");
+                            Log.i(TAG, "URL: " + downloadUri);
+                            Picasso.get().load(downloadUri).resize(500,500).into(imgProfilePicture);
+
+                            namePP = randName + ".jpg";
+                            urlPP = downloadUri.toString();
+
+                            Toast.makeText(NewUser.this, "Resim yükleme başarılı!", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(NewUser.this, "Resim yüklenemedi!", Toast.LENGTH_SHORT).show();
+                            imgProfilePicture.setImageResource(R.drawable.profile);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-
     }
 
     public void btnKaydet(View view){
         if(autoUniversity.getText().toString().trim().length() == 0 || etAdSoyad.getText().toString().trim().length() ==0){
             Toast.makeText(getApplicationContext(),"LÜtfen Gerekli Alanları Doldurunuz",Toast.LENGTH_LONG).show();
         }else {
-            String adSoyad=etAdSoyad.getText().toString().trim();
-            String universite = autoUniversity.getText().toString();
-            uploadData(adSoyad, universite);
+            String name = etAdSoyad.getText().toString();
+            String university = autoUniversity.getText().toString();
+
+            if (controlUniversity(university)){
+                uploadData(name, university);
+            } else {
+                Toast.makeText(this, "Lütfen geçerli bir üniversite adı giriniz.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
-    public void uploadData(String adSoyad,String universite){
-        String id= UUID.randomUUID().toString();//random ıd
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Kullanıcı oluşturuluyor
-        Map<String, Object> user = new HashMap<>();
-        user.put("id",id);
-        user.put("adSoyad",adSoyad);
-        user.put("email",firebaseUser.getEmail());
-        user.put("universite", universite);
-        user.put("resim", urlProfilePicture);
+    private void uploadData(String adSoyad, String universite) {
+        db.collection("users").
+                document(firebaseUser.getUid()).
+                set(new User(firebaseUser.getUid(), firebaseUser.getEmail(), adSoyad, universite, new Picture(namePP, urlPP))).
+                addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(NewUser.this, "Kayıt Başarılı",
+                                Toast.LENGTH_LONG).show();
 
-        // Yeni belge ekleniyor
-        db.collection("users")
-                .document(id).set(user);
+                        Intent intent2=new Intent(NewUser.this,HomeActivity.class);
+                        startActivity(intent2);
+                        finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(NewUser.this, "Kayıt Eklemede bir hata oluştu.",
+                        Toast.LENGTH_LONG).show();
 
-        Toast.makeText(NewUser.this, "Kayıt Başarılı",
-                Toast.LENGTH_LONG).show();
-        Intent intent2=new Intent(NewUser.this,HomeActivity.class);
-        startActivity(intent2);
-        finish();
+                Log.e(TAG, String.valueOf(e));
+            }
+        });
+    }
+
+    private boolean controlUniversity(String university){
+        boolean durum = false;
+
+        for (String str : getResources().getStringArray(R.array.universite)){
+            if (str.equals(university)){
+                durum = true;
+                break;
+            }
+        }
+
+        return durum;
     }
 }
