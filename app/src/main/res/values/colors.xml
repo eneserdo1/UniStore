@@ -8,4 +8,7 @@
     <color name="colorTextSecondrary">#FFFFFF</color>
     <color name="colorCard">#e0e0e0</color>,
     <color name="colorCardSecondrary">#9e9e9e</color>
+    <color name="lightgray">#e0e0e0</color>
+    <color name="lightgray2">#bdbdbd</color>
+
 </resources>

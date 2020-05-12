@@ -153,8 +153,9 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         String aciklama = editAciklama.getText().toString();
         String fiyat = editFiyat.getText().toString();
         String kategori = spKategori.getSelectedItem().toString();
+        String mail=firebaseUser.getEmail();
 
-        firebaseFirestore.collection("advertisement").add(new Advertisement(baslik, aciklama, kategori, fiyat))
+        firebaseFirestore.collection("advertisement").add(new Advertisement(baslik, aciklama, kategori, fiyat,mail))
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
