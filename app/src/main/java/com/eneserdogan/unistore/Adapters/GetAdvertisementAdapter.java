@@ -19,11 +19,17 @@ import java.util.ArrayList;
 public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertisementAdapter.MyViewHolder> {
     Context context;
     ArrayList<Advertisement> products;
-    ArrayList<String> resimler;
+    ArrayList<String> photoUrls;
 
-    public GetAdvertisementAdapter(Context c,ArrayList<Advertisement> p){
-        context=c;
-        products=p;
+    public GetAdvertisementAdapter(Context context){
+        this.context = context;
+        this.products = new ArrayList<>();
+        this.photoUrls = new ArrayList<>();
+    }
+
+    public void addElements(Advertisement product, String photoUrl){
+        products.add(product);
+        photoUrls.add(photoUrl);
     }
 
     @NonNull
@@ -35,11 +41,9 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
     @Override
     public void onBindViewHolder(@NonNull GetAdvertisementAdapter.MyViewHolder holder, int position) {
 
-
-        System.out.println("döngü"+products.get(position).getUrlname());
         holder.başlık.setText(products.get(position).getTitle());
         holder.fiyat.setText(products.get(position).getPrice());
-        Picasso.get().load(String.valueOf(products.get(position).getUrlname())).into(holder.productPic);
+        Picasso.get().load(String.valueOf(photoUrls.get(position))).into(holder.productPic);
 
     }
 

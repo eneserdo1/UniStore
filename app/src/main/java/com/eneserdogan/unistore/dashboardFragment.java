@@ -1,5 +1,6 @@
 package com.eneserdogan.unistore;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,10 +24,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.eneserdogan.unistore.Adapters.NewAdvertRecAdapter;
 import com.eneserdogan.unistore.Models.Advertisement;
 import com.eneserdogan.unistore.Models.Picture;
-import com.eneserdogan.unistore.Utils.RandomName;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,8 +37,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.util.Util;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -129,6 +131,15 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         return view;
     }
 
+    private void resetForm() {
+        spKategori.setSelection(0);
+        editBaslik.setText("");
+        editFiyat.setText("");
+        editAciklama.setText("");
+
+        recAdapter.clearList();
+    }
+
     private void loadWidgets(View view) {
         spKategori = view.findViewById(R.id.spinKategori);
         editBaslik = view.findViewById(R.id.etBaslik);
@@ -148,6 +159,7 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         recImages.setAdapter(recAdapter);
     }
 
+    @SuppressLint("RestrictedApi")
     private void urunKayit() {
         String baslik = editBaslik.getText().toString();
         String aciklama = editAciklama.getText().toString();
@@ -155,14 +167,18 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         String kategori = spKategori.getSelectedItem().toString();
         String mail=firebaseUser.getEmail();
 
-        firebaseFirestore.collection("advertisement").add(new Advertisement(baslik, aciklama, kategori, fiyat,mail))
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Document ID: " + documentReference);
-                        fotoYukle(documentReference);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
+
+        final String docID = Util.autoId();
+        firebaseFirestore.collection("advertisement")
+                .document(docID)
+                .set(new Advertisement(docID,baslik, aciklama, kategori, fiyat,mail))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(getActivity(), "İlan yüklendi.", Toast.LENGTH_SHORT).show();
+                fotoYukle(docID);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
@@ -170,21 +186,22 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         });
     }
 
-    private void fotoYukle(final DocumentReference documentReference) {
+    private void fotoYukle(final String docID) {
         HashMap<String, byte[]> images = recAdapter.getImages();
 
+        int i = 1;
         for(Map.Entry<String, byte[]> entry : images.entrySet()) {
             String key = entry.getKey();
             byte[] value = entry.getValue();
             Log.d(TAG, "uri: " + key);
             Log.d(TAG, "resim: " + Arrays.toString(value));
 
-            final String randName = RandomName.randImageName();
+            final String imgName = docID + "_resim" + i;
             final StorageReference refStorage = firebaseStorage
                     .child(firebaseUser.getEmail())
                     .child("advertisements")
-                    .child(documentReference.getId())
-                    .child(randName + ".jpg");
+                    .child(docID)
+                    .child(imgName + ".jpg");
             UploadTask uploadTask = refStorage.putBytes(value);
             Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
@@ -200,20 +217,23 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
                     if (task.isSuccessful()){
                         Uri downloadUri = task.getResult();
                         Log.i(TAG, "url: " + downloadUri);
-                        kaydetFoto(documentReference, randName, downloadUri);
+                        kaydetFoto(docID, imgName, downloadUri);
                     }
                     else {
                         Log.d(TAG, "Resim upload edilemedi.");
                     }
                 }
             });
+
+            i++;
         }
+
+        resetForm();
     }
 
-    public void kaydetFoto(DocumentReference documentReference, final String name, final Uri uri){
+    public void kaydetFoto(String docID, final String name, final Uri uri){
 
-        CollectionReference refSubCollection = documentReference.collection("pictures");
-        Log.d(TAG, "kaydetFoto: docID:" + documentReference.getId());
+        CollectionReference refSubCollection = firebaseFirestore.collection("advertisement").document(docID).collection("pictures");
         refSubCollection.document(name).set(new Picture(name + ".jpg", uri.toString())).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
