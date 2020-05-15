@@ -235,6 +235,7 @@ public class notificationsFragment extends Fragment {
 
     public void getData(){
 
+        String deneme;
         firebaseFirestore.
                 collection("users").
                 document(firebaseUser.getUid()).

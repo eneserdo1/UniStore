@@ -9,16 +9,8 @@ public class Advertisement {
     private String category;
     private String price;
     private String Id;
-    private ArrayList<String> urlname=new ArrayList<>();
     //Location
 
-    public Advertisement(String title, String description, String category, String price,String mail) {
-        this.title = title;
-        this.description = description;
-        this.category = category;
-        this.price = price;
-        this.mail=mail;
-    }
     public Advertisement(String Id,String title, String description, String category, String price,String mail) {
         this.Id=Id;
         this.title = title;
@@ -65,19 +57,13 @@ public class Advertisement {
     public void setPrice(String price) {
         this.price = price;
     }
+
     public String getMail(){
         return mail;
     }
+
     public void setMail(String mail){
         this.mail = mail;
-    }
-
-    public ArrayList<String> getUrlname(){
-        return urlname;
-    }
-
-    public void add(String url){
-        this.urlname.add(url);
     }
 
 

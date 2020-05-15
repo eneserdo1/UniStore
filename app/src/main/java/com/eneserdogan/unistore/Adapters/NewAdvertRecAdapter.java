@@ -66,10 +66,13 @@ public class NewAdvertRecAdapter extends RecyclerView.Adapter<NewAdvertRecAdapte
         }
     }
 
+
+
     public void deleteImage(int pos){
         compressedImages.remove(listImages.get(pos));
-        if (pos == listImages.size() - 1){
-            listImages.set(pos, "ek");
+        if (!listImages.contains("ek")){
+            listImages.remove(pos);
+            listImages.add("ek");
         } else{
             listImages.remove(pos);
             listImages.add("");
@@ -78,6 +81,7 @@ public class NewAdvertRecAdapter extends RecyclerView.Adapter<NewAdvertRecAdapte
 
     public void clearList(){
         listImages = new ArrayList<>(Arrays.asList("ek","","","","","","","","",""));
+        compressedImages.clear();
         notifyDataSetChanged();
     }
 

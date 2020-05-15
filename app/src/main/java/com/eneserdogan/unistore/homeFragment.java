@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.eneserdogan.unistore.Adapters.GetAdvertisementAdapter;
 import com.eneserdogan.unistore.Models.Advertisement;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -39,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +48,16 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
-interface arayüz{
-    void deneme(Advertisement advertisement);
-}
 
-public class homeFragment extends Fragment implements arayüz {
+public class homeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static ArrayList<Advertisement> advertisements = new ArrayList<>();
+
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
-    private List<String> documents;
+
     GetAdvertisementAdapter getAdvertisementAdapter;
     RecyclerView recyclerView;
-
 
     View view;
 
@@ -94,26 +92,23 @@ public class homeFragment extends Fragment implements arayüz {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_home, container, false);
-        documents=new ArrayList<>();
-        recyclerView=view.findViewById(R.id.recyclerViewHome);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
-        getDocumentId();
+
+        recyclerView=view.findViewById(R.id.recyclerViewHome);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        getAdvertisementAdapter=new GetAdvertisementAdapter(getContext());
+        recyclerView.setAdapter(getAdvertisementAdapter);
+
+        getAdvertisements();
 
         System.out.println("oncreatede");
-
-
-
-
-
-        //getSubDocument();
         return view;
     }
 
-    public void getDocumentId(){
+    private void getAdvertisements() {
         firebaseFirestore.collection("advertisement")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -127,80 +122,42 @@ public class homeFragment extends Fragment implements arayüz {
                                 String kategori=document.getString("category");
                                 String mail=document.getString("mail");
                                 String id=document.getId();
-                                System.out.println("1.getdocument"+id);
 
-                                Advertisement advertisement=new Advertisement(id,baslik,açıklama,kategori,fiyat,mail);
-                                getSubDocument(advertisement);
-                                //System.out.println("çıktı "+advertisement.getUrlname()+advertisement.getId());
-
+                                Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail);
+                                getPhotoUrl(adver);
                             }
+
                         } else {
                             Log.w("Error getting documents", task.getException());
                         }
                     }
                 });
-
-
-    }
-    public void getSubDocument(final Advertisement adver){
-
-        firebaseFirestore.collection("advertisement").document(adver.getId()).collection("pictures").get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String url = document.getString("urlPicture");
-                                System.out.println("1.url" + url);
-                                adver.add(url);
-                            }
-                            getAdvertisementAdapter=new GetAdvertisementAdapter(getContext(),advertisements);
-
-                            recyclerView.setAdapter(getAdvertisementAdapter);
-                            System.out.println("1.getsubdocument");
-
-                            deneme(adver);
-                        } else {
-                            Log.w("Error getting documents", task.getException());
-                        }
-                    }
-                });
-
     }
 
-    @Override
-    public void deneme(Advertisement advertisement) {
-        advertisements.add(advertisement);
+    public void getPhotoUrl(final Advertisement adver){
 
-        System.out.println("1.deneme");
+        firebaseFirestore.collection("advertisement").document(adver.getId())
+                .collection("pictures").document(adver.getId() + "_resim" + 1)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-        //System.out.println("SELAMIN AS" + advertisement.getUrlname() + "ID Si de bu = "  + advertisement.getId());
-        //System.out.println("arraydaki url "+advertisement.getUrlname());
-        //Burada table reload
+                String URL = documentSnapshot.getString("urlPicture");
+                addtoRecAdapter(adver, URL);
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: resim çekmede hata");
+            }
+        });
     }
-/*
-    public void downloadImage(){
-        FirebaseStorage storage=FirebaseStorage.getInstance();
-        StorageReference imageRef=storage.getReference()
-                .child("userEmail")
-                .child("advertisement")
-                .child("belge adı")
-                .child("resim adı");
 
-        imageRef.getBytes(1024*1024)
-                .addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                    @Override
-                    public void onSuccess(byte[] bytes) {
-                        Bitmap bitmap= BitmapFactory.decodeByteArray(bytes,0,bytes.length);
-                        ımageview.setImageBitmap(bitmap);
-                    }
-                });
-
-    }*/
-
-
-
+    private void addtoRecAdapter(Advertisement advertisement, String photoUrl) {
+        getAdvertisementAdapter.addElements(advertisement, photoUrl);
+        getAdvertisementAdapter.notifyDataSetChanged();
+    }
 }
 
 
