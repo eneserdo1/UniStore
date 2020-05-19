@@ -1,19 +1,24 @@
 package com.eneserdogan.unistore.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.eneserdogan.unistore.Models.Advertisement;
+import com.eneserdogan.unistore.ProductActivity;
 import com.eneserdogan.unistore.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertisementAdapter.MyViewHolder> {
@@ -39,12 +44,20 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GetAdvertisementAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GetAdvertisementAdapter.MyViewHolder holder, final int position) {
 
         holder.başlık.setText(products.get(position).getTitle());
         holder.fiyat.setText(products.get(position).getPrice());
         Picasso.get().load(String.valueOf(photoUrls.get(position))).into(holder.productPic);
 
+        holder.layProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context.getApplicationContext(), ProductActivity.class);
+                intent.putExtra("DocID", products.get(position));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -55,11 +68,13 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
     class MyViewHolder extends RecyclerView.ViewHolder {
         TextView başlık,fiyat;
         ImageView productPic;
+        LinearLayout layProduct;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             başlık=itemView.findViewById(R.id.ilan_baslik);
             fiyat=itemView.findViewById(R.id.ilan_fiyat);
             productPic=itemView.findViewById(R.id.ilan_ımage);
+            layProduct = itemView.findViewById(R.id.layoutProduct);
         }
     }
 }
