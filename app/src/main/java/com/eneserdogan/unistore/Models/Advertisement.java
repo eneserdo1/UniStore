@@ -1,8 +1,7 @@
 package com.eneserdogan.unistore.Models;
+import java.io.Serializable;
 
-import java.util.ArrayList;
-
-public class Advertisement {
+public class Advertisement implements Serializable {
     private String mail;
     private String title;
     private String description;
@@ -65,10 +64,5 @@ public class Advertisement {
     public void setMail(String mail){
         this.mail = mail;
     }
-
-
-
-
-
 }
 
