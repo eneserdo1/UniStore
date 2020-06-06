@@ -63,29 +63,36 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        CollectionReference collectionReference=firebaseFirestore.collection("users");
-        collectionReference.whereEqualTo("email",email.getText().toString()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()){
-                    QuerySnapshot document = task.getResult();
-                    if(document != null){
-                        System.out.println("döküment sayısı1: " + document.size());
-                        System.out.println("döküment sayısı2: " + document.getDocuments().size());
-                        List custom = document.getDocuments();
-                        if (custom.size() == 0){
-                            durum = false;
-                            System.out.println("getdata girdi");
-                        }
+        if (email.getText().toString().trim().matches(emailPattern))
+        {
+            CollectionReference collectionReference=firebaseFirestore.collection("users");
+            collectionReference.whereEqualTo("email",email.getText().toString()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()){
+                        QuerySnapshot document = task.getResult();
+                        if(document != null){
+                            System.out.println("döküment sayısı1: " + document.size());
+                            System.out.println("döküment sayısı2: " + document.getDocuments().size());
+                            List custom = document.getDocuments();
+                            if (custom.size() == 0){
+                                durum = false;
+                                System.out.println("getdata girdi");
+                            }
 
-                        login(durum);
+                            login(durum);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
+        else{
+            Toast.makeText(getApplicationContext()," Lütfen @[Üniversite Adı].edu.tr Uzantılı Email Girin ", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void login(final Boolean durum){
+
         firebaseAuth.signInWithEmailAndPassword(email.getText().toString(),password.getText().toString())
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -93,16 +100,14 @@ public class MainActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
                         if(task.isSuccessful()){
                             if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                                if (email.getText().toString().trim().matches(emailPattern)) {
-                                    if (durum){
-                                        startActivity(new Intent(MainActivity.this,HomeActivity.class));
-                                        System.out.println("false girdi");
-                                        finish();
-                                    }else {
-                                        startActivity(new Intent(MainActivity.this, NewUser.class));
-                                        System.out.println("else girdi");
-                                        finish();
-                                    }
+                                if (durum){
+                                    startActivity(new Intent(MainActivity.this,HomeActivity.class));
+                                    System.out.println("false girdi");
+                                    finish();
+                                }else {
+                                    startActivity(new Intent(MainActivity.this, NewUser.class));
+                                    System.out.println("else girdi");
+                                    finish();
                                 }
                             }else{
                                 Toast.makeText(MainActivity.this, "Lütfen mailinizi doğrulayınız."

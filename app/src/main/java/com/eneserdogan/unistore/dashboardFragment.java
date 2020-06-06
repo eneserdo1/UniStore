@@ -261,7 +261,7 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
                 if (items[item].equals("Fotoğraf Çek")) {
                     activeTakePhoto();
                 } else if (items[item].equals("Galeriden Seç")) {
-                    activeGallery(true);
+                    activeGallery();
                 } else if (items[item].equals("İptal")) {
                     dialog.dismiss();
                 }
@@ -276,7 +276,7 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         final CharSequence[] items = {"Fotoğrafı Sil",
                 "İptal"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Fotoğraf Ekle");
+        builder.setTitle("Fotoğrafı silmek istiyor musunuz?");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -296,7 +296,7 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
 
 
 
-    private void activeGallery(boolean newOrChange) {
+    private void activeGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
