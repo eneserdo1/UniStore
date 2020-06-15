@@ -79,6 +79,7 @@ public class notificationsFragment extends Fragment {
     StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
     String namePP = "";
+    String urlPP = "";
     boolean isExistsPhoto = false;
     byte[] compressed = null;
 
@@ -221,23 +222,7 @@ public class notificationsFragment extends Fragment {
             builder.show();
         }
         else{
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            final CharSequence[] items = {"Fotoğraf Çek", "Galeriden Seç",
-                    "İptal"};
-            builder.setTitle("Fotoğraf Ekle");
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (items[item].equals("Fotoğraf Çek")) {
-                        activeTakePhoto();
-                    } else if (items[item].equals("Galeriden Seç")) {
-                        activeGallery();
-                    } else if (items[item].equals("İptal")) {
-                        dialog.dismiss();
-                    }
-                }
-            });
-            builder.show();
+            newPhotoAlert();
         }
     }
 
@@ -377,9 +362,9 @@ public class notificationsFragment extends Fragment {
                         }else{
                             isExistsPhoto = true;
                             namePP = (String) map.get("namePicture");
-                            String url = (String) map.get("urlPicture");
+                            urlPP = (String) map.get("urlPicture");
 
-                            Picasso.get().load(url).resize(500,500).into(imgProfilePicture);
+                            Picasso.get().load(urlPP).resize(500,500).into(imgProfilePicture);
                         }
                     } else {
                         Log.d(TAG, "Veri bulunamadı.");
@@ -424,7 +409,8 @@ public class notificationsFragment extends Fragment {
             });
         }
         else{
-            uploadProfile("", "");
+            Log.d(TAG, "uploadPhoto: namePp:" + namePP);
+            uploadProfile(namePP,  urlPP);
         }
         deletePhotoCompletely();
     }
@@ -474,6 +460,8 @@ public class notificationsFragment extends Fragment {
         Log.d(TAG, "deletePhotoOnView: Fotoğraf arayüzden silindi.");
         clearCompressed();
         imgProfilePicture.setImageResource(R.drawable.profile);
+        namePP = "";
+        urlPP = "";
     }
     
     private void deletePhotoCompletely(){

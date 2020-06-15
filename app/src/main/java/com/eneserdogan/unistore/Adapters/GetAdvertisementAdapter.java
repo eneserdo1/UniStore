@@ -47,7 +47,7 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
     public void onBindViewHolder(@NonNull GetAdvertisementAdapter.MyViewHolder holder, final int position) {
 
         holder.başlık.setText(products.get(position).getTitle());
-        holder.fiyat.setText(products.get(position).getPrice());
+        holder.fiyat.setText(products.get(position).getPrice() + " TL");
         Picasso.get().load(String.valueOf(photoUrls.get(position))).into(holder.productPic);
 
         holder.layProduct.setOnClickListener(new View.OnClickListener() {
