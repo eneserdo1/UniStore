@@ -122,8 +122,9 @@ public class homeFragment extends Fragment {
                                 String kategori=document.getString("category");
                                 String mail=document.getString("mail");
                                 String id=document.getId();
+                                String uuid=document.getString("uuid");
 
-                                Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail);
+                                Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail,uuid);
                                 getPhotoUrl(adver);
                             }
 

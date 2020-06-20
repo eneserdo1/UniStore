@@ -10,5 +10,7 @@
     <color name="colorCardSecondrary">#9e9e9e</color>
     <color name="lightgray">#e0e0e0</color>
     <color name="lightgray2">#bdbdbd</color>
+    <color name="startblue">#09c6df</color>
+    <color name="endblue">#0bcce6</color>
 
 </resources>

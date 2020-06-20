@@ -9,15 +9,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.eneserdogan.unistore.Adapters.ImageSliderAdapter;
 import com.eneserdogan.unistore.Models.Advertisement;
+import com.eneserdogan.unistore.Models.OtherId;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,14 +44,11 @@ public class ProductActivity extends AppCompatActivity {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     ViewPager imgSlider;
-    Spinner spKategori;
-    EditText editBaslik;
-    EditText editFiyat;
-    EditText editAciklama;
+    TextView tvKategori,editBaslik,editFiyat,editAciklama;
     Button btnConversation;
 
     Advertisement advertisement;
-    String productOwnerEmail;
+    String productOwnerEmail,otherId;
 
     ImageSliderAdapter imgAdapter;
 
@@ -57,6 +57,7 @@ public class ProductActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product);
         advertisement = (Advertisement) getIntent().getSerializableExtra("DocID");
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,18 +75,14 @@ public class ProductActivity extends AppCompatActivity {
 
     void loadWidgets(){
         imgSlider = findViewById(R.id.imgSlider);
-        spKategori = findViewById(R.id.spinKategori);
-        spKategori.setEnabled(false);
+        tvKategori = findViewById(R.id.tvKategori);
         editBaslik = findViewById(R.id.etBaslik);
-        editBaslik.setEnabled(false);
         editFiyat = findViewById(R.id.etFiyat);
-        editFiyat.setEnabled(false);
         editAciklama = findViewById(R.id.etAciklama);
-        editAciklama.setEnabled(false);
         btnConversation = findViewById(R.id.btnStartConversation);
 
-        ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.kategori, android.R.layout.simple_spinner_dropdown_item);
-        spKategori.setAdapter(adapter);
+        /*ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.kategori, android.R.layout.simple_spinner_dropdown_item);
+        spKategori.setAdapter(adapter);*/
 
         imgAdapter = new ImageSliderAdapter(this);
         imgSlider.setAdapter(imgAdapter);
@@ -124,9 +121,9 @@ public class ProductActivity extends AppCompatActivity {
                 editBaslik.setText(documentSnapshot.getString("title"));
                 editAciklama.setText(documentSnapshot.getString("description"));
                 editFiyat.setText(documentSnapshot.getString("price"));
-                int pos = getPosition(documentSnapshot.getString("category"));
+                tvKategori.setText(documentSnapshot.getString("category"));
                 productOwnerEmail = documentSnapshot.getString("mail");
-                spKategori.setSelection(pos);
+                //spKategori.setSelection(pos);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -156,6 +153,12 @@ public class ProductActivity extends AppCompatActivity {
             finish(); // close this activity and return to preview activity (if there is any)
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void btnMesaj(View view){
+        startActivity(new Intent(ProductActivity.this,ChatActivity.class));
+        otherId=advertisement.getUuid();
+        OtherId.setOtherId(otherId);
+
     }
 
 

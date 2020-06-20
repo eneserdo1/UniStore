@@ -166,12 +166,13 @@ public class dashboardFragment extends Fragment implements NewAdvertRecAdapter.N
         String fiyat = editFiyat.getText().toString();
         String kategori = spKategori.getSelectedItem().toString();
         String mail=firebaseUser.getEmail();
+        String uuid=firebaseUser.getUid();
 
 
         final String docID = Util.autoId();
         firebaseFirestore.collection("advertisement")
                 .document(docID)
-                .set(new Advertisement(docID,baslik, aciklama, kategori, fiyat,mail))
+                .set(new Advertisement(docID,baslik, aciklama, kategori, fiyat,mail,uuid))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

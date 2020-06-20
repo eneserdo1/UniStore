@@ -2,6 +2,7 @@ package com.eneserdogan.unistore.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,9 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
     public void onBindViewHolder(@NonNull GetAdvertisementAdapter.MyViewHolder holder, final int position) {
 
         holder.başlık.setText(products.get(position).getTitle());
-        holder.fiyat.setText(products.get(position).getPrice() + " TL");
+        holder.başlık.setTextColor(Color.parseColor("#212121"));
+        holder.fiyat.setText(products.get(position).getPrice() + "₺");
+        holder.fiyat.setTextColor(Color.parseColor("#d32f2f"));
         Picasso.get().load(String.valueOf(photoUrls.get(position))).into(holder.productPic);
 
         holder.layProduct.setOnClickListener(new View.OnClickListener() {

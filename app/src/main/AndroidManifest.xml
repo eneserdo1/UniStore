@@ -17,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProductActivity"></activity>
+        <activity android:name=".MesajlarActivity"></activity>
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".ProductActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -31,7 +33,7 @@
 
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home"></activity>
+            android:label="@string/title_activity_home" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".verifyMailActivity" />
         <activity android:name=".NewUser" />

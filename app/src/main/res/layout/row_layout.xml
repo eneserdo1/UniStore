@@ -26,18 +26,24 @@
                 android:id="@+id/ilan_baslik"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="5dp"
+                android:background="@color/lightgray2"
+                />
 
             <TextView
 
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
                 android:id="@+id/ilan_fiyat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/lightgray2"/>
+                android:textSize="20sp"
+                />
 
 
         </LinearLayout>

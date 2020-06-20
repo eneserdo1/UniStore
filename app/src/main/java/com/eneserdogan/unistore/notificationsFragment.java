@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -26,6 +28,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.eneserdogan.unistore.Adapters.GetAdvertisementAdapter;
+import com.eneserdogan.unistore.Models.Advertisement;
 import com.eneserdogan.unistore.Models.Picture;
 import com.eneserdogan.unistore.Utils.RandomName;
 import com.google.android.gms.tasks.Continuation;
@@ -37,6 +41,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -51,6 +57,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 public class notificationsFragment extends Fragment {
@@ -72,11 +80,17 @@ public class notificationsFragment extends Fragment {
     AutoCompleteTextView UserUniversite;
     Button btnDüzenle;
     Button btnKaydet;
+    Button btnMesajlar;
     CircleImageView imgProfilePicture;
+
+    RecyclerView recyclerView;
+    GetAdvertisementAdapter getAdvertisementAdapter;
+
 
     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
     StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    FirebaseAuth firebaseAuth;
 
     String namePP = "";
     String urlPP = "";
@@ -142,6 +156,12 @@ public class notificationsFragment extends Fragment {
                 Log.d(TAG, "onClick: tıkla" + imgProfilePicture.isClickable());
             }
         });
+        btnMesajlar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(),MesajlarActivity.class));
+            }
+        });
     }
 
     @Override
@@ -151,8 +171,13 @@ public class notificationsFragment extends Fragment {
         view= inflater.inflate(R.layout.fragment_notifications, container, false);
 
         loadWidgets();
-
         getData();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        getAdvertisementAdapter=new GetAdvertisementAdapter(getContext());
+        recyclerView.setAdapter(getAdvertisementAdapter);
+
+        getAdvertisements();
         Log.d(TAG, "onClick: tıkla" + imgProfilePicture.isClickable());
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(),
@@ -164,15 +189,18 @@ public class notificationsFragment extends Fragment {
     }
 
     void loadWidgets(){
+        firebaseAuth=FirebaseAuth.getInstance();
 
+        recyclerView=view.findViewById(R.id.recylerViewProfil);
+        btnMesajlar=view.findViewById(R.id.btnMesajKutusu);
         UserName=view.findViewById(R.id.etProfilAdsoyad);
-        UserMail=view.findViewById(R.id.etProfilMail);
+        //UserMail=view.findViewById(R.id.etProfilMail);
         UserUniversite=view.findViewById(R.id.autoUniversity);
         btnDüzenle=view.findViewById(R.id.btnProfilDüzenle);
         btnKaydet=view.findViewById(R.id.btnProfilKaydet);
         imgProfilePicture = view.findViewById(R.id.imgPP);
 
-        UserMail.setEnabled(false);
+        //UserMail.setEnabled(false);
 
         btnKaydet.setVisibility(View.GONE);
         UserName.setEnabled(false);
@@ -352,7 +380,7 @@ public class notificationsFragment extends Fragment {
                     if (document.exists()){
 
                         UserName.setText(document.getString("name"));
-                        UserMail.setText(document.getString("email"));
+                        //UserMail.setText(document.getString("email"));
                         UserUniversite.setText(document.getString("university"));
 
                         HashMap map = (HashMap) document.get("picture");
@@ -494,6 +522,59 @@ public class notificationsFragment extends Fragment {
             Log.d(TAG, "deletePhotoFromStorage: Resim zaten yok.");
         }
     }
+    private void getAdvertisements() {
+        firebaseFirestore.collection("advertisement")
+                .whereEqualTo("mail",firebaseUser.getEmail())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (final QueryDocumentSnapshot document : task.getResult()) {
+                                String baslik = document.getString("title");
+                                String fiyat = document.getString("price");
+                                String açıklama = document.getString("description");
+                                String kategori=document.getString("category");
+                                String mail=document.getString("mail");
+                                String id=document.getId();
+                                String uuid=document.getString("uuid");
+
+                                Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail,uuid);
+                                getPhotoUrl(adver);
+                            }
+
+                        } else {
+                            Log.w("Error getting documents", task.getException());
+                        }
+                    }
+                });
+    }
+
+    public void getPhotoUrl(final Advertisement adver){
+
+        firebaseFirestore.collection("advertisement").document(adver.getId())
+                .collection("pictures").document(adver.getId() + "_resim" + 1)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                String URL = documentSnapshot.getString("urlPicture");
+                addtoRecAdapter(adver, URL);
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: resim çekmede hata");
+            }
+        });
+    }
+
+    private void addtoRecAdapter(Advertisement advertisement, String photoUrl) {
+        getAdvertisementAdapter.addElements(advertisement, photoUrl);
+        getAdvertisementAdapter.notifyDataSetChanged();
+    }
+
 
 }
 
