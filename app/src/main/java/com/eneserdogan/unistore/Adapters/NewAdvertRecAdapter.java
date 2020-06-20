@@ -124,7 +124,7 @@ public class NewAdvertRecAdapter extends RecyclerView.Adapter<NewAdvertRecAdapte
             });
         }
         else if (listImages.get(position).equals("ek")){
-            holder.imageView.setImageResource(R.drawable.addphoto);
+            holder.imageView.setImageResource(R.drawable.pngadd);
 
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

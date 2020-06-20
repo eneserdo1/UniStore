@@ -70,11 +70,11 @@ public class MesajlarAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        convertView= LayoutInflater.from(context).inflate(R.layout.other,parent,false);
+        convertView= LayoutInflater.from(context).inflate(R.layout.mesajbox,parent,false);
         TextView textView;
-        textView=(TextView) convertView.findViewById(R.id.otherText);
+        textView=(TextView) convertView.findViewById(R.id.otherText2);
         istekAt(otherIdList.get(position),textView);
-        LinearLayout linearLayout=convertView.findViewById(R.id.linearMesaj);
+        LinearLayout linearLayout=convertView.findViewById(R.id.linearMesajbox);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

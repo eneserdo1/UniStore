@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_2"
+    android:background="#fff"
     tools:context=".ui.dashboard.DashboardFragment">
 
     <ScrollView
@@ -21,11 +21,13 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="İlan Detayı"
+                android:text="İLAN EKLE"
                 android:textStyle="bold"
+                android:background="#00bcd4"
                 android:textAlignment="center"
-                android:textColor="@color/colorText"
-                android:textSize="40dp" />
+                android:layout_margin="5dp"
+                android:textColor="#fff"
+                android:textSize="36dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -41,57 +43,73 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginHorizontal="25dp">
-
-                <Spinner
-                    android:id="@+id/spinKategori"
+                android:layout_height="350dp"
+                app:cardBackgroundColor="#f5f5f5"
+                android:layout_margin="10dp">
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginVertical="5dp"
-                    android:autofillHints="Kategori Seçiniz."
-                    android:background="@drawable/customedittext"/>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="#f5f5f5"
+                    android:layout_marginHorizontal="5dp">
 
-                <EditText
-                    android:id="@+id/etBaslik"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/customedittext"
-                    android:hint="Başlık"
-                    android:textAlignment="center"
-                    android:layout_marginVertical="5dp"/>
+                    <Spinner
+                        android:id="@+id/spinKategori"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="#fff"
+                        android:layout_marginVertical="5dp"
+                        android:autofillHints="Kategori Seçiniz."
+                        />
 
-                <EditText
-                    android:id="@+id/etFiyat"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/customedittext"
-                    android:hint="Ürün Fiyatı"
-                    android:textAlignment="center"
-                    android:layout_marginVertical="5dp"/>
+                    <EditText
+                        android:id="@+id/etBaslik"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="Başlık"
+                        android:background="#fff"
 
-                <EditText
-                    android:id="@+id/etAciklama"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:background="@drawable/customedittext"
-                    android:hint="Ürün Açıklaması"
-                    android:gravity="top"
-                    android:padding="5dp"
-                    android:layout_marginVertical="5dp"/>
-                
-                <Button
-                    android:id="@+id/btnUrunEkle"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginHorizontal="10dp"
-                    android:text="Ürün Ekle" />
+                        android:textAlignment="center"
+                        android:layout_marginVertical="5dp"/>
+
+                    <EditText
+                        android:id="@+id/etFiyat"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="#fff"
+
+                        android:hint="Ürün Fiyatı"
+                        android:textAlignment="center"
+                        android:layout_marginVertical="5dp"/>
+
+                    <EditText
+                        android:id="@+id/etAciklama"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:hint="Ürün Açıklaması"
+                        android:background="#fff"
+
+                        android:gravity="top"
+                        android:padding="5dp"
+                        android:layout_marginVertical="5dp"/>
 
 
-            </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
+            <Button
+                android:id="@+id/btnUrunEkle"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#ef6c00"
+                android:layout_marginBottom="20dp"
+                android:layout_marginHorizontal="10dp"
+                android:text="Ürün Ekle" />
 
 
 
