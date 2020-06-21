@@ -1,10 +1,12 @@
 package com.eneserdogan.unistore;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,11 +47,10 @@ public class ProductActivity extends AppCompatActivity {
 
     ViewPager imgSlider;
     TextView tvKategori,editBaslik,editFiyat,editAciklama;
-    Button btnConversation;
-
+    Button btnConversation,btnDeleteProduct;
     Advertisement advertisement;
     String productOwnerEmail,otherId;
-
+    String usermail,othermail;
     ImageSliderAdapter imgAdapter;
 
     @Override
@@ -68,9 +69,31 @@ public class ProductActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
+        usermail=firebaseUser.getEmail();
+        othermail=advertisement.getMail();
         loadWidgets();
+
+
         loadAdversitementInfos();
+
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (usermail.equals(othermail)) {
+            System.out.println("if girdiii");
+            btnDeleteProduct.setVisibility(View.VISIBLE);
+            btnConversation.setVisibility(View.GONE);
+        }else{
+            System.out.println("else girdiii");
+
+            btnDeleteProduct.setVisibility(View.GONE);
+            btnConversation.setVisibility(View.VISIBLE);
+        }
     }
 
     void loadWidgets(){
@@ -80,6 +103,9 @@ public class ProductActivity extends AppCompatActivity {
         editFiyat = findViewById(R.id.etFiyat);
         editAciklama = findViewById(R.id.etAciklama);
         btnConversation = findViewById(R.id.btnStartConversation);
+        btnDeleteProduct=findViewById(R.id.btnDeleteProduct);
+
+
 
         /*ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.kategori, android.R.layout.simple_spinner_dropdown_item);
         spKategori.setAdapter(adapter);*/
@@ -120,9 +146,10 @@ public class ProductActivity extends AppCompatActivity {
                 Log.d(TAG, "onSuccess: Kayıt bilgileri getirildi.");
                 editBaslik.setText(documentSnapshot.getString("title"));
                 editAciklama.setText(documentSnapshot.getString("description"));
-                editFiyat.setText(documentSnapshot.getString("price"));
+                editFiyat.setText(documentSnapshot.getString("price")+"₺");
                 tvKategori.setText(documentSnapshot.getString("category"));
                 productOwnerEmail = documentSnapshot.getString("mail");
+
                 //spKategori.setSelection(pos);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -158,6 +185,39 @@ public class ProductActivity extends AppCompatActivity {
         startActivity(new Intent(ProductActivity.this,ChatActivity.class));
         otherId=advertisement.getUuid();
         OtherId.setOtherId(otherId);
+
+    }
+    public void deleteProuct(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProductActivity.this);
+        builder.setTitle("UniStore");
+        builder.setMessage("Silmek istiyor musunuz ?");
+        builder.setIcon(R.drawable.icon_delete);
+        builder.setNegativeButton("Hayır", null);
+        builder.setPositiveButton("Evet", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                firestore.collection("advertisement").document(advertisement.getId())
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d(TAG, "Başarıyla Silindi!");
+                                Intent intent=new Intent(ProductActivity.this,HomeActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Silme Başarısız", e);
+                            }
+                        });
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
 
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
+    android:background="#bbdefb"
     tools:context=".ui.dashboard.DashboardFragment">
 
     <ScrollView
@@ -23,9 +23,9 @@
                 android:layout_height="wrap_content"
                 android:text="İLAN EKLE"
                 android:textStyle="bold"
-                android:background="#00bcd4"
+                android:background="#039be5"
                 android:textAlignment="center"
-                android:layout_margin="5dp"
+
                 android:textColor="#fff"
                 android:textSize="36dp" />
 
@@ -46,13 +46,13 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="350dp"
-                app:cardBackgroundColor="#f5f5f5"
+                app:cardBackgroundColor="#bbdefb"
                 android:layout_margin="10dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="#f5f5f5"
+                    android:background="#bbdefb"
                     android:layout_marginHorizontal="5dp">
 
                     <Spinner
