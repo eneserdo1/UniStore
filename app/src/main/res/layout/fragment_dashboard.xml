@@ -16,6 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <TextView
@@ -45,7 +46,7 @@
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="400dp"
                 android:layout_marginTop="20dp"
                 app:cardBackgroundColor="#bbdefb"
                 android:layout_margin="10dp">
@@ -88,10 +89,9 @@
                     <EditText
                         android:id="@+id/etAciklama"
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
+                        android:layout_height="200dp"
                         android:hint="Ürün Açıklaması"
                         android:background="#fff"
-
                         android:gravity="top"
                         android:padding="5dp"
                         android:layout_marginVertical="5dp"/>

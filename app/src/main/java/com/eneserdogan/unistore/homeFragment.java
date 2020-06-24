@@ -96,7 +96,6 @@ public class homeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -104,63 +103,14 @@ public class homeFragment extends Fragment {
                              Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_home, container, false);
 
-
-
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
-
-        /*cb1 = view.findViewById(R.id.checkBox1);
-        cb2 = view.findViewById(R.id.checkBox2);
-        cb3 = view.findViewById(R.id.checkBox3);
-        cb4 = view.findViewById(R.id.checkBox4);*/
 
         recyclerView=view.findViewById(R.id.recyclerViewHome);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         getAdvertisementAdapter=new GetAdvertisementAdapter(getContext());
         recyclerView.setAdapter(getAdvertisementAdapter);
-
-        //getAdvertisements("Boş",false);
-        /*if (cb1.isChecked()) {
-            System.out.println("cb1 check");
-        }
-
-        cb1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (cb1.isChecked()){
-                    getAdvertisements(buttonView.getText().toString(),true);
-                }
-
-            }
-        });
-        cb2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (cb2.isChecked()){
-                    getAdvertisements(buttonView.getText().toString(),true);
-                }
-
-            }
-        });
-        cb3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (cb3.isChecked()){
-                    getAdvertisements(buttonView.getText().toString(),true);
-                }
-
-            }
-        });
-        cb4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (cb4.isChecked()){
-                    getAdvertisements(buttonView.getText().toString(),true);
-                }
-
-            }
-        });*/
 
         getAdvertisements();
         setHasOptionsMenu(true);
@@ -189,16 +139,11 @@ public class homeFragment extends Fragment {
                                     Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail,uuid);
                                     getPhotoUrl(adver);
                                 }
-
                             } else {
                                 Log.w("Error getting documents", task.getException());
                             }
                         }
                     });
-
-
-
-
     }
 
     public void getPhotoUrl(final Advertisement adver){
@@ -225,10 +170,6 @@ public class homeFragment extends Fragment {
         getAdvertisementAdapter.addElements(advertisement, photoUrl);
         getAdvertisementAdapter.notifyDataSetChanged();
     }
-
-
-
-
 }
 
 
