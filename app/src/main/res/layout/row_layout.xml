@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="#fff"
+    app:cardCornerRadius="15dp"
+    android:layout_margin="5dp"
+    android:layout_marginBottom="3dp">
     <LinearLayout
         android:id="@+id/layoutProduct"
         android:layout_width="match_parent"
@@ -13,7 +15,7 @@
         android:gravity="center">
         <ImageView
             android:id="@+id/ilan_ımage"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
             android:layout_width="120dp"
             android:layout_height="100dp"
             />
@@ -25,6 +27,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:id="@+id/ilan_baslik"
+                android:textColor="#212121"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
@@ -32,7 +35,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_margin="5dp"
+                android:layout_margin="8dp"
                 android:background="@color/lightgray2"
                 />
 
@@ -41,6 +44,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/ilan_fiyat"
+                android:textColor="#d50000"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"

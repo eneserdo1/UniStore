@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,8 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +66,10 @@ public class homeFragment extends Fragment {
 
     GetAdvertisementAdapter getAdvertisementAdapter;
     RecyclerView recyclerView;
-
     View view;
+    private CheckBox cb1,cb2,cb3,cb4;
+
+    List<String> kriter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -86,6 +96,7 @@ public class homeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -93,8 +104,15 @@ public class homeFragment extends Fragment {
                              Bundle savedInstanceState) {
         view=inflater.inflate(R.layout.fragment_home, container, false);
 
+
+
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
+
+        /*cb1 = view.findViewById(R.id.checkBox1);
+        cb2 = view.findViewById(R.id.checkBox2);
+        cb3 = view.findViewById(R.id.checkBox3);
+        cb4 = view.findViewById(R.id.checkBox4);*/
 
         recyclerView=view.findViewById(R.id.recyclerViewHome);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -102,37 +120,85 @@ public class homeFragment extends Fragment {
         getAdvertisementAdapter=new GetAdvertisementAdapter(getContext());
         recyclerView.setAdapter(getAdvertisementAdapter);
 
+        //getAdvertisements("Boş",false);
+        /*if (cb1.isChecked()) {
+            System.out.println("cb1 check");
+        }
+
+        cb1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (cb1.isChecked()){
+                    getAdvertisements(buttonView.getText().toString(),true);
+                }
+
+            }
+        });
+        cb2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (cb2.isChecked()){
+                    getAdvertisements(buttonView.getText().toString(),true);
+                }
+
+            }
+        });
+        cb3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (cb3.isChecked()){
+                    getAdvertisements(buttonView.getText().toString(),true);
+                }
+
+            }
+        });
+        cb4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (cb4.isChecked()){
+                    getAdvertisements(buttonView.getText().toString(),true);
+                }
+
+            }
+        });*/
+
         getAdvertisements();
+        setHasOptionsMenu(true);
 
         System.out.println("oncreatede");
         return view;
     }
 
     private void getAdvertisements() {
-        firebaseFirestore.collection("advertisement")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (final QueryDocumentSnapshot document : task.getResult()) {
-                                String baslik = document.getString("title");
-                                String fiyat = document.getString("price");
-                                String açıklama = document.getString("description");
-                                String kategori=document.getString("category");
-                                String mail=document.getString("mail");
-                                String id=document.getId();
-                                String uuid=document.getString("uuid");
 
-                                Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail,uuid);
-                                getPhotoUrl(adver);
+            firebaseFirestore.collection("advertisement")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (final QueryDocumentSnapshot document : task.getResult()) {
+                                    String baslik = document.getString("title");
+                                    String fiyat = document.getString("price");
+                                    String açıklama = document.getString("description");
+                                    String kategori=document.getString("category");
+                                    String mail=document.getString("mail");
+                                    String id=document.getId();
+                                    String uuid=document.getString("uuid");
+
+                                    Advertisement adver = new Advertisement(id,baslik,açıklama,kategori,fiyat,mail,uuid);
+                                    getPhotoUrl(adver);
+                                }
+
+                            } else {
+                                Log.w("Error getting documents", task.getException());
                             }
-
-                        } else {
-                            Log.w("Error getting documents", task.getException());
                         }
-                    }
-                });
+                    });
+
+
+
+
     }
 
     public void getPhotoUrl(final Advertisement adver){
@@ -159,6 +225,10 @@ public class homeFragment extends Fragment {
         getAdvertisementAdapter.addElements(advertisement, photoUrl);
         getAdvertisementAdapter.notifyDataSetChanged();
     }
+
+
+
+
 }
 
 

@@ -19,10 +19,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eneserdogan.unistore.Adapters.ImageSliderAdapter;
 import com.eneserdogan.unistore.Models.Advertisement;
 import com.eneserdogan.unistore.Models.OtherId;
+import com.eneserdogan.unistore.Models.Picture;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,8 +37,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProductActivity extends AppCompatActivity {
 
@@ -46,8 +51,8 @@ public class ProductActivity extends AppCompatActivity {
     FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
     ViewPager imgSlider;
-    TextView tvKategori,editBaslik,editFiyat,editAciklama;
-    Button btnConversation,btnDeleteProduct;
+    EditText tvKategori,editBaslik,editFiyat,editAciklama;
+    Button btnConversation,btnDeleteProduct,btnGüncelle,btnKaydet;
     Advertisement advertisement;
     String productOwnerEmail,otherId;
     String usermail,othermail;
@@ -60,7 +65,7 @@ public class ProductActivity extends AppCompatActivity {
         advertisement = (Advertisement) getIntent().getSerializableExtra("DocID");
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        /*Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Ürün Detayı");
 
@@ -68,15 +73,13 @@ public class ProductActivity extends AppCompatActivity {
         if (getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-        }
+        }*/
         usermail=firebaseUser.getEmail();
         othermail=advertisement.getMail();
         loadWidgets();
 
 
         loadAdversitementInfos();
-
-
 
 
     }
@@ -86,11 +89,13 @@ public class ProductActivity extends AppCompatActivity {
         super.onResume();
         if (usermail.equals(othermail)) {
             System.out.println("if girdiii");
+            btnGüncelle.setVisibility(View.VISIBLE);
             btnDeleteProduct.setVisibility(View.VISIBLE);
             btnConversation.setVisibility(View.GONE);
         }else{
-            System.out.println("else girdiii");
 
+            System.out.println("else girdiii");
+            btnGüncelle.setVisibility(View.GONE);
             btnDeleteProduct.setVisibility(View.GONE);
             btnConversation.setVisibility(View.VISIBLE);
         }
@@ -103,7 +108,14 @@ public class ProductActivity extends AppCompatActivity {
         editFiyat = findViewById(R.id.etFiyat);
         editAciklama = findViewById(R.id.etAciklama);
         btnConversation = findViewById(R.id.btnStartConversation);
+        btnGüncelle=findViewById(R.id.btnGüncelle);
         btnDeleteProduct=findViewById(R.id.btnDeleteProduct);
+        btnKaydet=findViewById(R.id.btnGüncellemeKayıt);
+        btnKaydet.setVisibility(View.GONE);
+        editBaslik.setEnabled(false);
+        tvKategori.setEnabled(false);
+        editFiyat.setEnabled(false);
+        editAciklama.setEnabled(false);
 
 
 
@@ -218,6 +230,81 @@ public class ProductActivity extends AppCompatActivity {
         alertDialog.show();
 
 
+
+    }
+    public void güncelle(View view){
+        if (usermail.equals(othermail)){
+            btnKaydet.setVisibility(View.VISIBLE);
+            btnGüncelle.setVisibility(View.GONE);
+            editBaslik.setEnabled(true);
+            editFiyat.setEnabled(true);
+            tvKategori.setEnabled(true);
+            editAciklama.setEnabled(true);
+        }
+    }
+    public void kaydet(View view){
+        String title = editBaslik.getText().toString();
+        String kategori = tvKategori.getText().toString();
+        String fiyat = editFiyat.getText().toString();
+        String açıklama = editAciklama.getText().toString();
+
+        Map<String, Object> updatedData = new HashMap<>();
+        updatedData.put("category", kategori);
+        updatedData.put("description", açıklama);
+        updatedData.put("title",title);
+        updatedData.put("price",fiyat);
+
+
+        firestore.collection("advertisement").
+                document(advertisement.getId()).update(updatedData).
+                addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(ProductActivity.this, "Başarıyla güncellendi.", Toast.LENGTH_SHORT).show();
+                        getData();
+                        btnKaydet.setVisibility(View.GONE);
+                        btnGüncelle.setVisibility(View.VISIBLE);
+                        editBaslik.setEnabled(false);
+                        tvKategori.setEnabled(false);
+                        editFiyat.setEnabled(false);
+                        editAciklama.setEnabled(false);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ProductActivity.this, "Güncelleme başarısız.", Toast.LENGTH_SHORT).show();
+
+                getData();
+            }
+        });
+
+    }
+    public void getData(){
+        firestore.
+                collection("advertisement").
+                document(advertisement.getId()).
+                get().
+                addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()){
+
+                                editAciklama.setText(document.getString("description"));
+                                //UserMail.setText(document.getString("email"));
+                                editBaslik.setText(document.getString("title"));
+                                editFiyat.setText(document.getString("price"));
+                                tvKategori.setText(document.getString("category"));
+
+                            } else {
+                                Log.d(TAG, "Veri bulunamadı.");
+                            }
+                        } else {
+                            Log.d(TAG, "İşlem başarısız.");
+                        }
+                    }
+                });
 
     }
 
