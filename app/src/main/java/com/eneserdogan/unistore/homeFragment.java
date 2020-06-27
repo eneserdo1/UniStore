@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 
 import android.util.Log;
@@ -21,8 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -68,7 +71,6 @@ public class homeFragment extends Fragment {
     RecyclerView recyclerView;
     View view;
     private CheckBox cb1,cb2,cb3,cb4;
-
     List<String> kriter;
 
     // TODO: Rename and change types of parameters
@@ -106,14 +108,16 @@ public class homeFragment extends Fragment {
         firebaseFirestore=FirebaseFirestore.getInstance();
         firebaseAuth=FirebaseAuth.getInstance();
 
+
+
         recyclerView=view.findViewById(R.id.recyclerViewHome);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
 
         getAdvertisementAdapter=new GetAdvertisementAdapter(getContext());
         recyclerView.setAdapter(getAdvertisementAdapter);
 
         getAdvertisements();
-        setHasOptionsMenu(true);
 
         System.out.println("oncreatede");
         return view;
@@ -170,6 +174,8 @@ public class homeFragment extends Fragment {
         getAdvertisementAdapter.addElements(advertisement, photoUrl);
         getAdvertisementAdapter.notifyDataSetChanged();
     }
+
+
 }
 
 

@@ -47,7 +47,7 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
     @Override
     public void onBindViewHolder(@NonNull GetAdvertisementAdapter.MyViewHolder holder, final int position) {
 
-        holder.başlık.setText(products.get(position).getTitle());
+        holder.başlık.setText(products.get(position).getTitle().toUpperCase());
         holder.fiyat.setText(products.get(position).getPrice() + "₺");
         Picasso.get().load(String.valueOf(photoUrls.get(position))).into(holder.productPic);
 
@@ -78,4 +78,5 @@ public class GetAdvertisementAdapter extends RecyclerView.Adapter<GetAdvertiseme
             layProduct = itemView.findViewById(R.id.layoutProduct);
         }
     }
+
 }

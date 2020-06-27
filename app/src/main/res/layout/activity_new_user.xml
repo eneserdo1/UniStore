@@ -32,7 +32,7 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="30dp"
                 android:src="@drawable/profile"
                 app:civ_border_color="#FF000000"
                 app:civ_border_width="1dp" />
@@ -64,16 +64,6 @@
             android:id="@+id/autoUniversity" />
 
         <!-- location infos -->
-
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="Location yapılacak"
-            android:gravity="center"
-            android:textColor="@color/colorText"
-            android:textSize="16dp"/>
 
         <Button
             android:id="@+id/btnKayit"

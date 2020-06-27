@@ -38,7 +38,6 @@ public class MesajAdapter extends RecyclerView.Adapter {
         }else {
             view= LayoutInflater.from(context).inflate(R.layout.other,parent,false);
             return  new ViewHolder(view);
-
         }
     }
 
@@ -66,18 +65,13 @@ public class MesajAdapter extends RecyclerView.Adapter {
                 mesajbody=(TextView)itemView.findViewById(R.id.userText);
             }else{
                 mesajbody=(TextView)itemView.findViewById(R.id.otherText);
-
             }
-
         }
 
         void setle(MesajModel msj){
             mesajbody.setText(msj.getMesaj().toString());
-
         }
     }
-
-
     //Veri tabanındaki froma göre layout durumu döndürme
     @Override
     public int getItemViewType(int position) {
