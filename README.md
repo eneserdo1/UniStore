@@ -33,7 +33,7 @@
 ![kayıtekranı](https://user-images.githubusercontent.com/60261458/98440083-81bbfa80-2107-11eb-8761-ee2d811fca22.jpg)
 
 ## Forgot Password Screen
-![şifresıfırla](https://user-images.githubusercontent.com/60261458/98440047-5b965a80-2107-11eb-84e3-9a3b4ca5cd49.jpg)
+![şifresıfırla](https://user-images.githubusercontent.com/60261458/98440047-5b965a80-2107-11eb-84e3-9a3b4ca5cd49.jpg | width=48)
 
 ## Home Screen
 ![ürünlistesi](https://user-images.githubusercontent.com/60261458/98440052-64872c00-2107-11eb-9b49-69e9248ffbc1.jpg)
