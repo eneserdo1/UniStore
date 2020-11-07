@@ -18,3 +18,24 @@
   <li>Update Product</li>
   <li>Messaging</li>
 </ul>
+
+## Technologies
+* [Android Studio]
+* [Java]
+* [Firebase]
+
+# User Interfaces 
+
+
+
+
+
+
+
+
+
+
+
+[Android Studio]: <https://developer.android.com/studio>
+[Java]: <https://www.java.com/tr/>
+[Firebase]: <https://console.firebase.google.com/>
